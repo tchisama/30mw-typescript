@@ -41,7 +41,10 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
     })
     addDoc(
       collection(db, _collection),
-      data
+      {
+        ...data,
+        deleted:false
+      }
     )
   }
   useEffect(()=>{
