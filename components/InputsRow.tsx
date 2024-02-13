@@ -125,11 +125,11 @@ const InputsRow = ({
 							<Button onClick={()=>{
 								// click the input file with the id
 								document.getElementById(id)?.click()
-							}} size={"icon"} variant={"outline"}>
+							}} className="gap-2" variant={"outline"}>
 								{
-									loading ? <Loader size={18} className="animate-spin"/> :
-									!rows[index].value ? <Upload size={18} /> :
-														<Replace size={18} />
+									loading ? <><Loader size={18} className="animate-spin"/>Loading</>:
+									!rows[index].value ? <><Upload size={18} /> Upload</>:
+														<><Replace size={18} /> Change</>
 								}
 							</Button>
 							)

@@ -29,7 +29,7 @@ type Props = {
 
 function DCard({ name,collection, description, rows, className, id}: Props) {
 	return (
-		<Card className={cn("w-[400px] relative h-fit ", className)}>
+		<Card className={cn("w-full relative h-fit ", className)}>
 
       <ControlDoc collection={collection} rows={rows} id={id}>
         <Button size={"icon"} className="absolute top-2 right-2" variant={"outline"}><MoreHorizontal size={18}/></Button>

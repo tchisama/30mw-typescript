@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { RowsTypes } from '@/types';
 import { format } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
+import { ScrollArea } from './ui/scroll-area';
 
 const Row = ({
 	name,
@@ -32,7 +33,7 @@ const Row = ({
 			) : null}
 			{type == "text" ? (
 				<div
-					className="text-sm whitespace-normal break-all"
+					className="text-sm max-h-[200px] overflow-auto whitespace-normal break-all"
 					dangerouslySetInnerHTML={{
 						__html: value.slice(0, maxLength).replace(/\n/g, "<br/>"),
 					}}
