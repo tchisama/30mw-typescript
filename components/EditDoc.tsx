@@ -13,12 +13,12 @@ import { Button } from './ui/button'
 import { Save, Trash, Trash2 } from 'lucide-react'
 import { DropdownMenuItem } from './ui/dropdown-menu'
 import Row from './Row'
-import { Rows } from './DCard'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from './ui/scroll-area'
 import InputsRow from './InputsRow'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
+import { Rows } from '@/types'
 
 type Props = {
   children: React.ReactNode
@@ -61,7 +61,7 @@ const EditDoc = ({children,rows,collection:collection,id}: Props) => {
 							)}
 							key={name + "::" + i}
 						>
-							<InputsRow prefix={r?.prefix} index={i} setRows={setRowsV} rows={rowsV} type={r.type} name={r.name} value={r.value} />
+							<InputsRow row={r} index={i} setRows={setRowsV} rows={rowsV} />
 						</div>
 					))}
       </DialogDescription>

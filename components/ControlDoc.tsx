@@ -12,7 +12,7 @@ import { Dialog } from '@radix-ui/react-dialog'
 import { Button } from './ui/button'
 import EditDoc from './EditDoc'
 import { Copy, Pencil, Trash } from 'lucide-react'
-import { Rows } from './DCard'
+import { Rows } from '@/types'
 
 type Props = {
   children: React.ReactNode

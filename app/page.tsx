@@ -1,5 +1,5 @@
 "use client"
-import Dvc, { Rows } from "@/components/DCard";
+import Dvc from "@/components/DCard";
 import { db } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 import logo from "@/public/519EahgX90L._AC_SX466_.jpg";
@@ -7,6 +7,7 @@ import vercel from "@/public/99120244Alami About.jpg";
 import React, { useEffect } from "react";
 import CreateNewDoc from "@/components/CreateNewDoc";
 import { Button } from "@/components/ui/button";
+import { Rows } from "@/types";
 
 
 type dtype = {
@@ -23,12 +24,39 @@ type dtype = {
 
 const TestRows:Rows[] = [
 	{
+		name: "image",
+		type: "image",
+	},
+	{
 		name: "name",
 		type: "string",
 	},
 	{
+		name:"category",
+		type:"select",
+		select:[
+			{
+				name:"test",
+				value:"test"
+			},
+			{
+				name:"test2",
+				value:"test2"
+			}
+		]
+	},
+	{
 		name: "price",
 		type: "number",
+		prefix: "dh",
+	},
+	{
+		name: "createdAt",
+		type: "date",
+	},
+	{
+		name:"time",
+		type:"time",
 	},
 	{
 		name: "inStock",
@@ -37,7 +65,7 @@ const TestRows:Rows[] = [
 	{
 		name:"description",
 		type:"text",
-	}
+	},
 ]
 
 export default function Home() {
@@ -66,7 +94,6 @@ export default function Home() {
 							return {
 								...r,
 								value:d[r.name as keyof dtype],
-								prefix:r.name=="price"?"dh":""
 							}
 						})
 					}
@@ -75,7 +102,7 @@ export default function Home() {
 				})
 			}
 			<CreateNewDoc rows={TestRows} collection={"test"} >
-				<Button>Create</Button>
+				<Button>Create New</Button>
 			</CreateNewDoc>
 		</div>
 	);
