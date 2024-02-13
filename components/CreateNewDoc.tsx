@@ -17,30 +17,25 @@ import { Rows } from './DCard'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from './ui/scroll-area'
 import InputsRow from './InputsRow'
-import { doc, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 
 type Props = {
   children: React.ReactNode
   rows:Rows[],
   collection:string,
-  id:string
 }
 
-const CreateNewDoc = ({children,rows,collection:collection,id}: Props) => {
+const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
   const [rowsV,setRowsV] = React.useState(rows)
   const save =()=>{
     const data:{[key:string]:any} = {}
     rowsV.forEach(r=>{
       data[r.name] = r.value
     })
-    console.log(data)
-    updateDoc(
-      doc(db, collection, id),
-      {
-      ... 
+    addDoc(
+      collection(db, _collection),
       data
-      }
     )
   }
   return (

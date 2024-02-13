@@ -1,10 +1,12 @@
 "use client"
-import Dvc from "@/components/DCard";
+import Dvc, { Rows } from "@/components/DCard";
 import { db } from "@/firebase";
 import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 import logo from "@/public/519EahgX90L._AC_SX466_.jpg";
 import vercel from "@/public/99120244Alami About.jpg";
 import React, { useEffect } from "react";
+import CreateNewDoc from "@/components/CreateNewDoc";
+import { Button } from "@/components/ui/button";
 
 
 type dtype = {
@@ -16,6 +18,27 @@ type dtype = {
 	show: boolean;
 	id: string;
 }
+
+
+
+const TestRows:Rows[] = [
+	{
+		name: "name",
+		type: "string",
+	},
+	{
+		name: "price",
+		type: "number",
+	},
+	{
+		name: "inStock",
+		type: "boolean",
+	},
+	{
+		name:"description",
+		type:"text",
+	}
+]
 
 export default function Home() {
 	const [ds, setDs] = React.useState<dtype[]>()
@@ -39,38 +62,21 @@ export default function Home() {
 					id={d.id}
 					collection={"test"}
 					rows={
-						[
-							{
-								name:"image",
-								type:"image",
-								value:d.image
-							},
-							{
-								name:"name",
-								type:"string",
-								value:d.name
-							},
-							{
-								name:"price",
-								type:"number",
-								value:d.price
-							},
-							{
-								name:"inStock",
-								type:"boolean",
-								value:d.inStock
-							},
-							{
-								name:"description",
-								type:"text",
-								value:d.description
+						TestRows.map((r)=>{
+							return {
+								...r,
+								value:d[r.name as keyof dtype],
+								prefix:r.name=="price"?"dh":""
 							}
-						]
+						})
 					}
 
 					/>
 				})
 			}
+			<CreateNewDoc rows={TestRows} collection={"test"} >
+				<Button>Create</Button>
+			</CreateNewDoc>
 		</div>
 	);
 }

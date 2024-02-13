@@ -17,7 +17,7 @@ import Row from "./Row";
 import ControlDoc from "./ControlDoc";
 export type Rows={
 		name: string;
-		value: any;
+		value?: any;
 		type: "string" | "number" | "image" | "text" | "boolean";
 		prefix?: string;
 }
