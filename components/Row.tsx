@@ -59,7 +59,7 @@ const Row = ({
 					src={value}
 					width={300}
 					height={300}
-					className="w-full aspect-square max-h-[400px] object-contain mt-2 p-3 border rounded-xl bg-slate-50"
+					className="w-full aspect-square max-h-[400px] object-contain mt-2 border rounded-xl bg-slate-50"
 					alt=""
 				/>
 			) : null}

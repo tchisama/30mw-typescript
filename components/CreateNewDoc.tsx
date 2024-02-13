@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Dialog,
   DialogClose,
@@ -28,9 +28,15 @@ type Props = {
 
 const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
   const [rowsV,setRowsV] = React.useState(rows)
+  const [check,setCheck] = React.useState(false)
   const save =()=>{
+    // check all the rows if the value is not empty
+    // if not empty save the doc
+
+    if(!check) return
     const data:{[key:string]:any} = {}
     rowsV.forEach(r=>{
+      if(!r.value) return
       data[r.name] = r.value
     })
     addDoc(
@@ -38,6 +44,10 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
       data
     )
   }
+  useEffect(()=>{
+    let _check = rowsV.every(r=>r.value)
+    setCheck(_check)
+  },[rowsV])
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>
@@ -65,9 +75,14 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
       <DialogClose>
           <Button variant={"ghost"}>cancel</Button>
       </DialogClose>
-      <DialogClose>
-        <Button onClick={save} className='gap-2'><Save size={18}/>Save</Button>
-      </DialogClose>
+      {
+        check ?
+        <DialogClose>
+          <Button onClick={save} className='gap-2'><Save size={18}/>Save</Button>
+        </DialogClose>
+        :
+        <Button disabled={!check} onClick={save} className='gap-2'><Save size={18}/>Save</Button>
+      }
     </DialogFooter>
   </DialogContent>
 </Dialog>

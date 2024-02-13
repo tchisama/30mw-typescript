@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import { CalendarIcon, Replace } from "lucide-react";
+import { CalendarIcon, Circle, Loader, Replace, Upload } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Timestamp } from "firebase/firestore";
 import UploadImage from "./UploadImage";
@@ -118,27 +118,37 @@ const InputsRow = ({
 				/>
 			) : type === "image" ? (
 				<div className="relative">
-				<UploadImage className="absolute top-4 right-2">
+				<UploadImage returnImage={(image)=>setRows(rows.map((r,i)=>i==index?{...r,value:image}:r))} className="absolute top-4 right-2">
 						{
-							(id)=>{
+							({id,loading})=>{
 							return (
 							<Button onClick={()=>{
 								// click the input file with the id
 								document.getElementById(id)?.click()
 							}} size={"icon"} variant={"outline"}>
-								<Replace size={18} />
+								{
+									loading ? <Loader size={18} className="animate-spin"/> :
+									!rows[index].value ? <Upload size={18} /> :
+														<Replace size={18} />
+								}
 							</Button>
 							)
 							}
 						}
 				</UploadImage>
-				<Image
-					src={value}
-					width={300}
-					height={300}
-					className="w-full max-h-[400px] object-contain mt-2 p-3 border rounded-xl bg-slate-50"
-					alt=""
-				/>
+				{
+					rows[index].value ?
+					<Image
+						src={rows[index].value}
+						width={300}
+						height={300}
+						className="w-full max-h-[400px] object-contain mt-2  border rounded-xl bg-slate-50"
+						alt=""
+					/>:
+					<div className="w-full max-h-[400px] flex items-center justify-center text-lg object-contain mt-2 h-[300px] border rounded-xl bg-slate-50">
+						Upload Image
+					</div>
+				}
 				</div>
 			) : type === "text" ? (
 					<Textarea
