@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
@@ -20,8 +20,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { CalendarIcon, Circle, Loader, Loader2, Replace, Upload } from "lucide-react";
 import { Calendar } from "./ui/calendar";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, collection, getDoc, getDocs, query, where } from "firebase/firestore";
 import UploadImage from "./UploadImage";
+import { db } from "@/firebase";
 
 
 const InputsRow = ({
@@ -31,7 +32,9 @@ const InputsRow = ({
 		value,
 		type,
 		prefix,
-		select
+		select,
+		reference,
+		key
 	},
 	setRows,
 	index,
@@ -43,6 +46,15 @@ const InputsRow = ({
 	setRows: Dispatch<SetStateAction<Rows[]>>;
 	rows: Rows[];
 }) => {
+	const [docs, setDocs] = React.useState<any[]>([])
+	useEffect(() => {
+		if(type=="reference"){
+			if(!reference) return
+			getDocs(query(collection(db,reference),where("deleted" ,"==",false))).then((doc)=>{
+				setDocs(doc.docs.map((d)=>({...d.data(),id:d.id})))
+			})	
+		}
+	},[type,reference])
 	return (
 		<div
 			className={cn(
@@ -175,6 +187,27 @@ const InputsRow = ({
 									select.map((s)=>{
 										return(
 											<SelectItem key={s.name} value={s.value}>{s.name}</SelectItem>
+										)
+									})
+								}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+
+				):
+				type === "reference" ? (
+					<Select defaultValue={value} onValueChange={(value : string) => setRows(rows.map((r, i) => i === index ? { ...r, value } : r))}>
+						<SelectTrigger  className="w-[300px]">
+							<SelectValue  placeholder={name} />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectLabel>Select {name}</SelectLabel>
+								{
+									docs &&
+									docs.map((s)=>{
+										return(
+											<SelectItem key={s.id} value={s.id}>{s[key]}</SelectItem>
 										)
 									})
 								}

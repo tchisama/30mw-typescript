@@ -19,7 +19,7 @@ function CustomPage({selectedCollection}: Props) {
   return (
     selectedCollection ?
 				<div className="relative flex-1">
-					<div className=" sticky border-b top-0 z-20 bg-slate-50">
+					<div className=" sticky border-b top-0 z-20 bg-slate-100">
 						<div className="flex py-4  gap-2 justify-between">
 							<h1 className="text-4xl">{selectedCollection.name}</h1>
 							<div className="flex gap-2"></div>

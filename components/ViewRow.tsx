@@ -12,7 +12,8 @@ type Props = {
   maxLength?:number
 }
 
-function ViewRow({row:{name,value,type,prefix},maxLength=400}: Props) {
+function ViewRow({row:{name,value,type ,key,prefix,reference},maxLength=400}: Props) {
+  const row = {name,value,type,prefix,reference,key}
   return (
         <div
             className={cn(
@@ -21,7 +22,7 @@ function ViewRow({row:{name,value,type,prefix},maxLength=400}: Props) {
             )}
         >
             <div className="capitalize text-gray-600 font-medium">{name}</div>
-            <RenderType row={{name,value,type,prefix}} maxLength={maxLength} />
+            <RenderType row={row as Rows} maxLength={maxLength} />
         </div>
   )
 }

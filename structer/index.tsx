@@ -24,6 +24,12 @@ export const collections: collType[] = [
               subtitle:"number of all the orders you got",
               collection:"orders",
               icon:<DollarSign size={50} strokeWidth={1}/>
+            },
+            {
+              name:"customers",
+              subtitle:"number of all the customers in the store",
+              collection:"customers",
+              icon:<Users size={50} strokeWidth={1}/>
             }
           ]
         }
@@ -34,7 +40,7 @@ export const collections: collType[] = [
     page:"collection",
 		collection: "products",
 		icon: <Box size={iconsSize}/>,
-    type: "table",
+    // type: "table",
 		rows: [
       {
         name: "image",
@@ -55,18 +61,9 @@ export const collections: collType[] = [
       },
       {
         name: "category",
-        type: "select",
-        select: [
-          {
-            name: "Electronics",
-            value: "electronics"
-          },
-          {
-            name: "Clothing",
-            value: "clothing"
-          },
-          // Add more categories as needed
-        ]
+        type: "reference",
+        reference: "categories",
+        key: "name"
       },
       {
         name: "stock",
@@ -237,6 +234,10 @@ export const collections: collType[] = [
     page:"collection",
     rows: [
       {
+        name: "image",
+        type: "image"
+      },
+      {
         name: "name",
         type: "string"
       },
@@ -248,10 +249,6 @@ export const collections: collType[] = [
         name: "parentCategory",
         type: "string"
       },
-      {
-        name: "image",
-        type: "string"
-      }
     ] as Rows[],
     href: "/dashboard/categories"
   }
