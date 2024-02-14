@@ -19,7 +19,6 @@ type Props = {
 
 
 function RowsFilter({children,showedRows,setShowedRows}: Props) {
-  console.log(showedRows)
   return (
     showedRows && setShowedRows &&
     <Popover>

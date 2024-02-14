@@ -98,14 +98,14 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
                 Object.keys(showedRows).map((key) =>(
                   showedRows[key]&&
                   <TableCell key={key} className="font-medium">
-                    <RenderType maxLength={30} row={{name:key,value:dsWithSearch[i][key],prefix:rows.find(r=>r.name==key)?.prefix,type:rows.find(r=>r.name==key)?.type as RowsTypes} } />
+                    <RenderType typePage="table" maxLength={30} row={{name:key,value:dsWithSearch[i][key],prefix:rows.find(r=>r.name==key)?.prefix,type:rows.find(r=>r.name==key)?.type as RowsTypes} } />
                   </TableCell>
                 ))
               }
               {
                 row.deleted &&
                 deleted ?
-                <Badge className="absolute hover:bg-white text-red-500 bg-white top-1 left-1">deleted</Badge>
+                <Badge className="absolute hover:bg-transparent text-red-500 bg-transparent top-1 left-2">deleted</Badge>
                 :null
               }
 

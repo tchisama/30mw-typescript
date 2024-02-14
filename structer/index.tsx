@@ -1,14 +1,45 @@
 import { Rows, collType } from "@/types";
-import { Box, Boxes, DollarSign, Group, List, Star, Users } from "lucide-react";
+import { Box, Boxes, DollarSign, Group, Home, List, Star, Users } from "lucide-react";
 
 const iconsSize = 18
 export const collections: collType[] = [
+  {
+    name:"Home",
+    icon:<Home size={iconsSize}/>,
+    href:"/dashboard/home",
+    page:"custom",
+    sections:[
+        {
+          type:"analyticsCards",
+          name:"Analytics",
+          cards:[
+            {
+              name:"Products",
+              subtitle:"number of all the products in the store",
+              collection:"products",
+              icon:<Boxes size={50} strokeWidth={1}/>
+            },
+            {
+              name:"orders",
+              subtitle:"number of all the orders you got",
+              collection:"orders",
+              icon:<DollarSign size={50} strokeWidth={1}/>
+            }
+          ]
+        }
+      ]
+  },
 	{
 		name: "Products",
+    page:"collection",
 		collection: "products",
 		icon: <Box size={iconsSize}/>,
     type: "table",
 		rows: [
+      {
+        name: "image",
+        type: "image"
+      },
       {
         name: "name",
         type: "string"
@@ -52,8 +83,9 @@ export const collections: collType[] = [
 	{
 		name: "Orders",
 		collection: "orders",
+    page:"collection",
 		icon: <Boxes size={iconsSize}/>,
-    // type: "table",
+    type: "table",
 		rows: [
       {
         name: "orderNumber",
@@ -96,6 +128,7 @@ export const collections: collType[] = [
 {
     name: "Customers",
     collection: "customers",
+    page:"collection",
     icon: <Users size={iconsSize}/>,
     rows: [
       {
@@ -117,10 +150,6 @@ export const collections: collType[] = [
       {
         name: "address",
         type: "string"
-      },
-      {
-        name: "orders",
-        type: "array"
       }
     ] as Rows[],
     href: "/dashboard/customers"
@@ -128,6 +157,7 @@ export const collections: collType[] = [
   {
     name: "Reviews",
     collection: "reviews",
+    page:"collection",
     icon: <Star size={iconsSize}/>,
     rows: [
       {
@@ -157,6 +187,7 @@ export const collections: collType[] = [
     name: "Sales",
     collection: "sales",
     icon: <DollarSign size={iconsSize}/>,
+    page:"collection",
     rows: [
       {
         name: "orderNumber",
@@ -203,6 +234,7 @@ export const collections: collType[] = [
     name: "Categories",
     collection: "categories",
     icon: <Group size={iconsSize}/>,
+    page:"collection",
     rows: [
       {
         name: "name",

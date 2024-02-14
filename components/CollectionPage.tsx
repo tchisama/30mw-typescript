@@ -4,13 +4,13 @@ import { CopyX, Eye, EyeOff, Filter, Plus, Rows, Trash, X } from 'lucide-react'
 import CreateNewDoc from './CreateNewDoc'
 import { Input } from './ui/input'
 import DocsList from './DocsList'
-import { collType } from '@/types'
+import { CollPage, collType } from '@/types'
 import { cn } from '@/lib/utils'
 import CleanTrash from './CleanTrash'
 import RowsFilter from './RowsFilter'
 import DocsTable from './DocsTable'
 type Props = {
-  selectedCollection: collType | null
+  selectedCollection: CollPage | null
 }
 
 function CollectionPage({selectedCollection}: Props) {

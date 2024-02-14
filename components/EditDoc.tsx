@@ -31,9 +31,12 @@ const EditDoc = ({children,rows,collection:collection,id}: Props) => {
   const save =()=>{
     const data:{[key:string]:any} = {}
     rowsV.forEach(r=>{
-      data[r.name] = r.value
+      if(r.type=="image" && r.value === undefined){
+        data[r.name] = ""
+      }else{
+        data[r.name] = r.value
+      }
     })
-    console.log(data)
     updateDoc(
       doc(db, collection, id),
       {
@@ -42,6 +45,7 @@ const EditDoc = ({children,rows,collection:collection,id}: Props) => {
       }
     )
   }
+  console.log(collection,id)
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>
@@ -50,7 +54,7 @@ const EditDoc = ({children,rows,collection:collection,id}: Props) => {
       <DialogTitle>Edit Document</DialogTitle>
     </DialogHeader>
       <ScrollArea className='h-[70vh] px-0'>
-      <DialogDescription className='px-4'>
+      <DialogDescription className='px-4 py-4'>
 				{rows &&
 					rows.map((r, i) => (
 						<div
