@@ -9,3 +9,11 @@ export type Rows={
 			value:string
 		}[]
 }
+export type collType = {
+  name:string
+  collection:string
+  icon:React.ReactNode
+	type?:"table"|"cards"
+  rows:Rows[]
+  href:string
+}

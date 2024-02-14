@@ -12,7 +12,6 @@ import {
 import { Button } from './ui/button'
 import { Save, Trash, Trash2 } from 'lucide-react'
 import { DropdownMenuItem } from './ui/dropdown-menu'
-import Row from './Row'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from './ui/scroll-area'
 import InputsRow from './InputsRow'
@@ -48,7 +47,7 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
     )
   }
   useEffect(()=>{
-    let _check = rowsV.every(r=>r.value)
+    let _check = rowsV.every(r=>r.type === "boolean" ? true : r.value)
     setCheck(_check)
   },[rowsV])
   return (

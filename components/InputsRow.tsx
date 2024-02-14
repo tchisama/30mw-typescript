@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import { CalendarIcon, Circle, Loader, Replace, Upload } from "lucide-react";
+import { CalendarIcon, Circle, Loader, Loader2, Replace, Upload } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Timestamp } from "firebase/firestore";
 import UploadImage from "./UploadImage";
@@ -127,7 +127,7 @@ const InputsRow = ({
 								document.getElementById(id)?.click()
 							}} className="gap-2" variant={"outline"}>
 								{
-									loading ? <><Loader size={18} className="animate-spin"/>Loading</>:
+									loading ? <><Loader2 size={18} className="animate-spin"/>Loading</>:
 									!rows[index].value ? <><Upload size={18} /> Upload</>:
 														<><Replace size={18} /> Change</>
 								}
@@ -169,7 +169,7 @@ const InputsRow = ({
 						</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>
-								<SelectLabel>{name}</SelectLabel>
+								<SelectLabel>Select {name}</SelectLabel>
 								{
 									select &&
 									select.map((s)=>{
