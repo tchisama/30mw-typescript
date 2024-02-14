@@ -8,6 +8,7 @@ import { collType } from '@/types'
 import { cn } from '@/lib/utils'
 import CleanTrash from './CleanTrash'
 import RowsFilter from './RowsFilter'
+import DocsTable from './DocsTable'
 type Props = {
   selectedCollection: collType | null
 }
@@ -28,7 +29,7 @@ function CollectionPage({selectedCollection}: Props) {
   return (
     selectedCollection ?
 				<div className="relative flex-1">
-					<div className=" sticky top-0 z-20 bg-slate-50">
+					<div className=" sticky border-b top-0 z-20 bg-slate-50">
 						<div className="flex py-4  gap-2 justify-between">
 							<h1 className="text-4xl">{selectedCollection.name}</h1>
 							<div className="flex gap-2">
@@ -65,13 +66,15 @@ function CollectionPage({selectedCollection}: Props) {
                 </RowsFilter>
 						</div>
 					</div>
+          <div className='py-2'>
           {
             selectedCollection?.type === "table" ?
-            <div></div>
+            <DocsTable rows={selectedCollection?.rows} showedRows={showedRows} coll={selectedCollection?.collection} deleted={showDeleted} search={search} />
             :
             <DocsList showedRows={showedRows} deleted={showDeleted} search={search} coll={selectedCollection?.collection} rows={selectedCollection?.rows} />
           }
-				</div>
+          </div>
+        </div>
       :null
   )
 }

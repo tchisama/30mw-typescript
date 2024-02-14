@@ -33,7 +33,7 @@ function DCard({ name , deleted ,showedRows, collection, description, rows, clas
             <ControlDoc deleted={deleted} collection={collection} rows={rows} id={id}>
                 <Button size={"icon"} className="absolute top-2 right-2" variant={"outline"}><MoreHorizontal size={18} /></Button>
             </ControlDoc>
-
+						
             {(name || description) ? (
                 <CardHeader>
                     {name && <CardTitle>{name}</CardTitle>}

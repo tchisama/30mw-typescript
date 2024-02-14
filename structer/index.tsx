@@ -1,13 +1,13 @@
-import { Rows } from "@/types";
+import { Rows, collType } from "@/types";
 import { Box, Boxes, DollarSign, Group, List, Star, Users } from "lucide-react";
 
 const iconsSize = 18
-export const collections = [
+export const collections: collType[] = [
 	{
 		name: "Products",
 		collection: "products",
-    type: "table",
 		icon: <Box size={iconsSize}/>,
+    type: "table",
 		rows: [
       {
         name: "name",
@@ -15,11 +15,12 @@ export const collections = [
       },
       {
         name: "description",
-        type: "string"
+        type: "text"
       },
       {
         name: "price",
-        type: "number"
+        type: "number",
+        prefix:"Dh"
       },
       {
         name: "category",
@@ -38,7 +39,8 @@ export const collections = [
       },
       {
         name: "stock",
-        type: "number"
+        type: "number",
+        prefix:"items"
       },
       {
         name: "featured",
@@ -51,6 +53,7 @@ export const collections = [
 		name: "Orders",
 		collection: "orders",
 		icon: <Boxes size={iconsSize}/>,
+    // type: "table",
 		rows: [
       {
         name: "orderNumber",
@@ -63,10 +66,6 @@ export const collections = [
       {
         name: "customer",
         type: "string"
-      },
-      {
-        name: "products",
-        type: "array"
       },
       {
         name: "totalAmount",

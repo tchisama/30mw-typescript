@@ -17,7 +17,8 @@ type Props = {
 }
 
 
-function DocsList({rows,search ,showedRows,deleted, coll}: Props) { const [ds, setDs] = React.useState<any[]>()
+function DocsList({rows,search ,showedRows,deleted, coll}: Props) { 
+  const [ds, setDs] = React.useState<any[]>()
   const [dsWithSearch, setDsWithSearch] = React.useState<any[]>()
   const [loading,setLoading]=useState(false)
 	useEffect(()=>{
