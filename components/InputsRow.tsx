@@ -73,6 +73,7 @@ const onValueChange = (newValue: any) => {
         const newRows = [...prevRows];
         let currentObject = newRows[index[0]];
         for (let i = 1; i < index.length - 1; i++) {
+					if(currentObject.type=="object"){
             if (currentObject && currentObject.object) {
                 currentObject = currentObject.object[index[i]];
             } else {
@@ -80,7 +81,16 @@ const onValueChange = (newValue: any) => {
                 // For example, you might return prevRows as is, throw an error, or handle it in another way.
                 return prevRows;
             }
-        }
+					}else if(currentObject.type=="array"){
+            if (currentObject && currentObject.value) {
+                currentObject = currentObject.value[index[i]];
+            } else {
+                // Handle the case where currentObject or currentObject.object is undefined
+                // For example, you might return prevRows as is, throw an error, or handle it in another way.
+                return prevRows;
+            }
+					}
+				}
 
         if (currentObject && currentObject.object) {
             currentObject.object[index[index.length - 1]].value = newValue;
@@ -300,16 +310,20 @@ const onValueChange = (newValue: any) => {
           <Button className="ml-auto">Add to {name}</Button>
           <Carousel className="p-2 min-h-16 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2">
             <CarouselContent>
-              {Array.isArray(value) && value?.length > 0 ? (
-                value?.map((a: any, i: number) => (
-                  <CarouselItem key={i}>
-                    <div key={i} className="p-1 px-2 bg-white border  rounded-md">
-                      {/* <InputsRow row={{...array,value:a}as Rows} /> */}
-                      hello
-                    </div>
-                  </CarouselItem>
-                ))
-              ) : (
+              {
+									value?.length > 0 ?
+									value?.map((a:Rows[], i:number) => (
+											<CarouselItem key={i} className='flex flex-col gap-1'>
+													{
+															a.map((b:Rows, j:number) => (
+																	<div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+																			<InputsRow index={[...index, i]} rows={rows} setRows={setRows} row={b} />
+																	</div>
+															))
+													}
+											</CarouselItem>
+									))
+               : (
                 <div className="flex items-center justify-center w-full h-16">
                   <div className="p-1 px-2 bg-white border  rounded-md">No data</div>
                 </div>

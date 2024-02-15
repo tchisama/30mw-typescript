@@ -10,7 +10,7 @@ export type Rows={
 		}[]
 		reference?:string;
 		key:string;
-		array?:Rows
+		array?:Rows[]
 		object?:[
 			Rows
 		]

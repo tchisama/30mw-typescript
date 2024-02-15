@@ -1,4 +1,5 @@
 import { Rows, collType } from "@/types";
+import { Value } from "@radix-ui/react-select";
 import {
 	Box,
 	Boxes,
@@ -98,35 +99,34 @@ export const collections: collType[] = [
 				name: "customer",
 				type: "string",
 			},
-			{
-				name: "object",
-				type: "object",
-				object: [
-					{
-						name: "product",
-						type: "string",
-					},
+      {
+        name: "cart",
+        type: "array",
+        array: [
           {
-            name: "inStock",
-            type: "boolean",
+            name: "product",
+            type: "string",
           },
-        {
-          name: "object number 2",
-          type: "object",
-          object: [
-            {
-              name: "product",
-              type: "string",
-            },
-
-            {
-              name: "inStock",
-              type: "boolean",
-            },
-          ],
-        },
-				],
-			},
+          {
+            name: "price",
+            type: "object",
+            object: [
+              {
+                name: "amount",
+                type: "number",
+              },
+              {
+                name: "currency",
+                type: "string",
+              },
+            ]
+          },
+          {
+            name: "quantity",
+            type: "number",
+          },
+        ],
+      }
 		] as Rows[],
 		href: "/dashboard/orders",
 	},

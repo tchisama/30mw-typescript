@@ -27,6 +27,7 @@ type Props = {
 function RenderType({row, maxLength,typePage="cards"}: Props) {
     const [category, setCategory] = React.useState<any>("")
     useEffect(() => {
+        console.log(row)
         if(row.type=="reference"){
             if(!row.value) return
             if(!row.reference) return
@@ -95,20 +96,23 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
             {row.type == "array" ? (
                 row.array &&
                     <Carousel className='p-2 min-h-20 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
-                        <CarouselContent>
+                        <CarouselContent className=''>
                             {
-                                Array.isArray(row.value) &&
                                 row?.value?.length > 0 ?
-                                row.value?.map((a:any, i:number) => (
-                                    <CarouselItem key={i}>
-                                        <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
-                                            <ViewRow row={a} />
-                                        </div>
+                                row.value?.map((a:Rows[], i:number) => (
+                                    <CarouselItem key={i} className='flex flex-col gap-1'>
+                                        {
+                                            a.map((b:Rows, j:number) => (
+                                                <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+                                                    <ViewRow row={b} />
+                                                </div>
+                                            ))
+                                        }
                                     </CarouselItem>
                                 ))
                                 :
                                 <div className="flex items-center justify-center w-full h-16">
-                                    <div className='p-1 px-3 bg-white border  rounded-md'>No data</div>
+                                    <div className='p-1 px-3 bg-white border  rounded-md'>No data </div>
                                 </div>
                             }
                         </CarouselContent >

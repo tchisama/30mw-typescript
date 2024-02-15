@@ -80,6 +80,7 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
       <TableRow>
         {
           rows.map((row) => (
+            row.type === "object" ? null :
             showedRows?.[row.name] ?
             <TableHead key={row.name}>{row.name}</TableHead>
             :null
@@ -95,12 +96,22 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
             <TableRow key={row.id} className='relative'>
               {
                 showedRows&&
-                Object.keys(showedRows).map((key) =>(
-                  showedRows[key]&&
-                  <TableCell key={key} className="font-medium">
-                    <RenderType typePage="table" maxLength={30} row={{name:key,reference:rows.find(r=>r.name==key)?.reference,key:rows.find(r=>r.name==key)?.key as string,value:dsWithSearch[i][key],prefix:rows.find(r=>r.name==key)?.prefix,type:rows.find(r=>r.name==key)?.type as RowsTypes} } />
-                  </TableCell>
-                ))
+                Object.keys(showedRows).map((key) =>{
+                  let name:string = key
+                  let reference:string = rows.find(r=>r.name==key)?.reference as string
+                  let _key:string = rows.find(r=>r.name==key)?.key as string
+                  let value = dsWithSearch[i][key]
+                  let _type = rows.find(r=>r.name==key)?.type as RowsTypes
+                  let prefix = rows.find(r=>r.name==key)?.prefix
+
+                  return (
+                    showedRows[key]&&
+                    _type !== "object" &&
+                    <TableCell key={key} className="font-medium">
+                      <RenderType typePage="table" maxLength={30} row={{name:key,reference,key:_key,value,prefix,type:_type}} />
+                    </TableCell>
+                  )
+                })
               }
               {
                 row.deleted &&
