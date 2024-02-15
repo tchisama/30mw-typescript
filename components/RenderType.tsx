@@ -8,6 +8,14 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { ImageIcon } from 'lucide-react'
 import { db } from '@/firebase'
+import ViewRow from './ViewRow'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 type Props = {
     row: Rows
@@ -15,43 +23,43 @@ type Props = {
     typePage?: "table" | "cards"
 }
 
-function RenderType({row:{ name, reference,key,value,type,prefix}, maxLength,typePage="cards"}: Props) {
+function RenderType({row, maxLength,typePage="cards"}: Props) {
     const [category, setCategory] = React.useState<any>("")
     useEffect(() => {
-        if(type=="reference"){
-            if(!value) return
-            if(!reference) return
-            if(!key) return
-            getDoc(doc(db,reference,value)).then((doc)=>{
+        if(row.type=="reference"){
+            if(!row.value) return
+            if(!row.reference) return
+            if(!row.key) return
+            getDoc(doc(db,row.reference,row.value)).then((doc)=>{
                 setCategory(doc.data() as any)
                 console.log(doc.data() as any)
             })	
         }
-    },[value,reference,key,type])
+    },[row])
     return (
-    <div className='overflow-hidden'>
-            {type == "string" || type == "number" || type == "select" || type == "time"  ? (
-                <div>{String(value).slice(0, 30)} {prefix}</div>
+    <div className=''>
+            {row.type == "string" || row.type == "number" || row.type == "select" || row.type == "time"  ? (
+                <div>{String(row.value).slice(0, 30)} {row.prefix}</div>
             ) : null}
-            { type == "reference" ? (
-                <div>{category?.[key]} {prefix}</div>
+            { row.type == "reference" ? (
+                <div>{category?.[row.key]} {row.prefix}</div>
             ) : null}
-            {type == "text" ? (
+            {row.type == "text" ? (
                 <div
                     className="text-sm max-h-[200px] overflow-auto whitespace-normal break-all"
                     dangerouslySetInnerHTML={{
-                        __html: value.slice(0, maxLength).replace(/\n/g, "<br/>"),
+                        __html: row.value.slice(0, maxLength).replace(/\n/g, "<br/>"),
                     }}
                 ></div>
             ) :
-                type == "date" ? (
+                row.type == "date" ? (
                     <div className='text-sm'>
-                        {value ? format(new Date((value as Timestamp).toDate()), "dd/MM/yyyy") : "----"}
+                        {row.value ? format(new Date((row.value as Timestamp).toDate()), "dd/MM/yyyy") : "----"}
                     </div>
                 )
                     : null}
-            {type == "boolean" ? (
-                value ? (
+            {row.type == "boolean" ? (
+                row.value ? (
                     <Badge className="text-green-600" variant="outline">
                         True
                     </Badge>
@@ -61,10 +69,10 @@ function RenderType({row:{ name, reference,key,value,type,prefix}, maxLength,typ
                     </Badge>
                 )
             ) : null}
-            {type == "image" ? (
-                value ?
+            {row.type == "image" ? (
+                row.value ?
                 <Image
-                    src={value}
+                    src={row.value}
                     width={typePage == "table" ? 60 : 300}
                     height={typePage == "table" ? 60 : 300}
                     className={
@@ -80,6 +88,42 @@ function RenderType({row:{ name, reference,key,value,type,prefix}, maxLength,typ
                         )}
                 ><ImageIcon size={30} strokeWidth={1} color='#555' /></div>
             ) : null}
+
+
+            {row.type == "array" ? (
+                row.array &&
+                    <Carousel className='p-2 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
+                        <CarouselContent>
+                            {
+                                Array.isArray(row.value) &&
+                                row.value?.map((a:any, i:number) => (
+                                    <CarouselItem key={i}>
+                                        <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+                                            <ViewRow row={a} />
+                                        </div>
+                                    </CarouselItem>
+                                ))
+                            }
+                        </CarouselContent >
+                        <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 left-1'/>
+                        <CarouselNext  className='absolute top-1/2 -translate-y-1/2 right-1'/>
+                    </Carousel>
+
+            ) : null}
+
+
+            {row.type == "object" ? (
+                row.object &&
+                <div className='p-2 bg-slate-50 mt-2 border rounded-md flex flex-col '>
+                    {
+                        Array.isArray(row.object) &&
+                            row.object?.map((a:Rows, i:number) => (
+                                    <ViewRow key={i} row={a} />
+                        ))
+                    }
+                </div>
+            ) : null}
+
     </div>
 )
 }

@@ -1,15 +1,6 @@
-import React, { useEffect } from 'react'
-import { Button } from './ui/button'
-import { CopyX, Eye, EyeOff, Filter, Plus, Rows, Trash, X } from 'lucide-react'
-import CreateNewDoc from './CreateNewDoc'
-import { Input } from './ui/input'
-import DocsList from './DocsList'
-import { CollPage, CustomPage as CustomPageType, collType } from '@/types'
-import { cn } from '@/lib/utils'
-import CleanTrash from './CleanTrash'
-import RowsFilter from './RowsFilter'
-import DocsTable from './DocsTable'
-import { Card, CardContent } from './ui/card'
+import React, {  } from 'react'
+import {  CustomPage as CustomPageType, collType } from '@/types'
+
 import AnalyticCard from './AnalyticCard'
 type Props = {
   selectedCollection: CustomPageType | null

@@ -1,4 +1,4 @@
-export type RowsTypes = "string" | "number" | "image" | "text" | "boolean" | "date" | "time" | "select"|"reference"; 
+export type RowsTypes = "string" | "number" | "image" | "text" | "boolean" | "date" | "time" | "select"|"reference"|"array" | "object"
 export type Rows={
 		name: string;
 		value?: any;
@@ -10,7 +10,10 @@ export type Rows={
 		}[]
 		reference?:string;
 		key:string;
-
+		array?:Rows
+		object?:[
+			Rows
+		]
 }
 export type collType = CollPage | CustomPage
 

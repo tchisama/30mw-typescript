@@ -24,6 +24,14 @@ import { Timestamp, collection, getDoc, getDocs, query, where } from "firebase/f
 import UploadImage from "./UploadImage";
 import { db } from "@/firebase";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import ViewRow from "./ViewRow";
 
 const InputsRow = ({
 	maxLength = 400,
@@ -34,7 +42,9 @@ const InputsRow = ({
 		prefix,
 		select,
 		reference,
-		key
+		key,
+		array,
+		object,
 	},
 	setRows,
 	index,
@@ -59,7 +69,7 @@ const InputsRow = ({
 		<div
 			className={cn(
 				"flex justify-between pt-1 ",
-				type == "image" || type == "text" ? "flex-col" : " gap-4  items-center"
+				type == "image" || type == "text" || type == "array" || type == "object" ? "flex-col" : " gap-4  items-center"
 			)}
 		>
 			<div className="capitalize text-gray-700 font-medium">{name}</div>
@@ -76,7 +86,7 @@ const InputsRow = ({
 					}
 					}
 					className="w-[300px]"
-					value={rows[index].value}
+					value={rows[index]?.value}
 				/>
 				{prefix && <div>{prefix}</div>}
 				</div>
@@ -248,7 +258,47 @@ const InputsRow = ({
 							/>
 						</PopoverContent>
 					</Popover>
-				):null
+				):
+type == "array" ? (
+                array &&
+								<div className="flex flex-col ">
+									<Button className="ml-auto">Add to {name}</Button>
+                    <Carousel className='p-2 min-h-16 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
+                        <CarouselContent>
+                            {
+                                Array.isArray(value) &&
+																value?.length>0?
+                                value?.map((a:any, i:number) => (
+                                    <CarouselItem key={i}>
+                                        <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+																					{/* <InputsRow row={{...array,value:a}as Rows} /> */}
+																					hello
+                                        </div>
+                                    </CarouselItem>
+                                ))
+																:
+																<div className="flex items-center justify-center w-full h-16">
+																	<div className='p-1 px-2 bg-white border  rounded-md'>No data</div>
+																</div>
+                            }
+                        </CarouselContent >
+                        <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 left-1'/>
+                        <CarouselNext  className='absolute top-1/2 -translate-y-1/2 right-1'/>
+                    </Carousel>
+								</div>
+
+            ) :
+type == "object" ? (
+                object &&
+                <div className='p-2 bg-slate-50 mt-2 border rounded-md flex flex-col '>
+                    {
+                        Array.isArray(object) &&
+                            object?.map((a:Rows, i:number) => (
+                                    <InputsRow key={i} row={a} />
+                        ))
+                    }
+                </div>
+            ) : null
 			}
 		</div>
 	);

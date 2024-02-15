@@ -12,16 +12,24 @@ type Props = {
   maxLength?:number
 }
 
-function ViewRow({row:{name,value,type ,key,prefix,reference},maxLength=400}: Props) {
-  const row = {name,value,type,prefix,reference,key}
+function ViewRow({row,maxLength=400}: Props) {
   return (
         <div
             className={cn(
                 "flex justify-between text-gray-500  ",
-                type == "image" || type == "text" ? "flex-col" : " items-center"
+                row.type == "image" || row.type == "text" || row.type == "array" || row.type == "object" ? "flex-col" : " items-center"
             )}
         >
-            <div className="capitalize text-gray-600 font-medium">{name}</div>
+            <div className='flex justify-between'>
+              <div className="capitalize text-gray-600 font-medium">{row.name}</div>
+              {
+                row.type == "array"?
+                <div className='text-sm'>
+                  {row?.value?.length} items
+                </div>
+                :null
+              }
+            </div>
             <RenderType row={row as Rows} maxLength={maxLength} />
         </div>
   )
