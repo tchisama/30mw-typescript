@@ -137,6 +137,10 @@ export const collections: collType[] = [
 		icon: <Users size={iconsSize} />,
 		rows: [
 			{
+				name: "photo",
+				type: "image",
+			},
+			{
 				name: "firstName",
 				type: "string",
 			},
@@ -158,17 +162,7 @@ export const collections: collType[] = [
         object:[
           {
             name:"country",
-            type:"object",
-            object:[
-              {
-                name:"name",
-                type:"string",
-              },
-              {
-                name:"code",
-                type:"string",
-              },
-            ]
+            type:"string",
           },
           {
             name:"city",

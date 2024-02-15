@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button } from './ui/button'
-import { CopyX, Eye, EyeOff, Filter, Plus, Rows, Trash, X } from 'lucide-react'
+import { CopyX, Eye, EyeOff, Filter, Grid, LayoutGrid, List, Plus, Rows, Trash, X } from 'lucide-react'
 import CreateNewDoc from './CreateNewDoc'
 import { Input } from './ui/input'
 import DocsList from './DocsList'
@@ -17,11 +17,13 @@ function CollectionPage({selectedCollection}: Props) {
   const [search, setSearch] = React.useState("")
   const [showDeleted, setShowDeleted] = React.useState(false)
   const [showedRows, setShowedRows] = React.useState<{[key:string]:boolean}>()
+  const [pageType,setPageType] = React.useState<"cards"|"table">("cards")
   useEffect(()=>{
     let newShowedRows:{[key:string]:boolean} = {}
     selectedCollection?.rows.forEach(r=>{
       newShowedRows[r.name] = true
     })
+    setPageType(selectedCollection?.type as "cards"|"table" || "cards")
     setShowedRows(
       newShowedRows
     )
@@ -60,6 +62,10 @@ function CollectionPage({selectedCollection}: Props) {
 							</div>
 						</div>
 						<div className="flex pb-4 gap-2 justify-end">
+                <div  className='gap-1 border flex bg-white rounded-2xl p-[2px] items-center px-1'>
+                  <Button onClick={() => setPageType("table")} size={"icon"} className='w-8 h-8' variant={pageType === "cards" ? "ghost" : "default"}><List size={18}/></Button>
+                  <Button onClick={() => setPageType("cards")} size={"icon"} className='w-8 h-8' variant={pageType === "table" ? "ghost" : "default"}><LayoutGrid size={18}/></Button>
+                </div>
 								<Input value={search} onInput={(e:any)=>setSearch(e.target.value)} placeholder="Search" className="w-fit md:min-w-[400px]"/>
                 <RowsFilter showedRows={showedRows} setShowedRows={setShowedRows}>
                   <Button size={"icon"} className="" variant={"outline"}><Filter size={18}/></Button>
@@ -68,7 +74,7 @@ function CollectionPage({selectedCollection}: Props) {
 					</div>
           <div className='py-2'>
           {
-            selectedCollection?.type === "table" ?
+            pageType == "table" ?
             <DocsTable rows={selectedCollection?.rows} showedRows={showedRows} coll={selectedCollection?.collection} deleted={showDeleted} search={search} />
             :
             <DocsList showedRows={showedRows} deleted={showDeleted} search={search} coll={selectedCollection?.collection} rows={selectedCollection?.rows} />

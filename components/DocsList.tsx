@@ -47,15 +47,16 @@ function DocsList({rows,search ,showedRows,deleted, coll}: Props) {
       search?
       ds.filter((d) => {
                 if (search) {
-                    for (const key in d) {
-                        if (Object.prototype.hasOwnProperty.call(d, key)) {
-                            const value = d[key as keyof typeof d];
-                            if (typeof value === "string" && value.includes(search)) {
-                                return true; 
-                            }
-                        }
-                    }
-                    return false; 
+                    // for (const key in d) {
+                    //     if (Object.prototype.hasOwnProperty.call(d, key)) {
+                    //         const value = d[key as keyof typeof d];
+                    //         if (typeof value === "string" && value.includes(search)) {
+                    //             return true; 
+                    //         }
+                    //     }
+                    // }
+                    return JSON.stringify(d).toLowerCase().includes(search.toLowerCase())
+                    // return false; 
                 }
                 return true; 
             })

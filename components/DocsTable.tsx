@@ -57,21 +57,21 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
       search?
       ds.filter((d) => {
                 if (search) {
-                    for (const key in d) {
-                        if (Object.prototype.hasOwnProperty.call(d, key)) {
-                            const value = d[key as keyof typeof d];
-                            if (typeof value === "string" && value.includes(search)) {
-                                return true; 
-                            }
-                        }
-                    }
-                    return false; 
+                    // for (const key in d) {
+                    //     if (Object.prototype.hasOwnProperty.call(d, key)) {
+                    //         const value = d[key as keyof typeof d];
+                    //         if (typeof value === "string" && value.includes(search)) {
+                    //             return true; 
+                    //         }
+                    //     }
+                    // }
+                    return JSON.stringify(d).toLowerCase().includes(search.toLowerCase())
+                    // return false; 
                 }
                 return true; 
             })
       : ds
     )
-    console.log(ds)
   },[search,ds])
   return (
   <Table className='bg-white p-2 rounded border'>
@@ -98,7 +98,7 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
                 Object.keys(showedRows).map((key) =>(
                   showedRows[key]&&
                   <TableCell key={key} className="font-medium">
-                    <RenderType typePage="table" maxLength={30} row={{name:key,value:dsWithSearch[i][key],prefix:rows.find(r=>r.name==key)?.prefix,type:rows.find(r=>r.name==key)?.type as RowsTypes} } />
+                    <RenderType typePage="table" maxLength={30} row={{name:key,reference:rows.find(r=>r.name==key)?.reference,key:rows.find(r=>r.name==key)?.key as string,value:dsWithSearch[i][key],prefix:rows.find(r=>r.name==key)?.prefix,type:rows.find(r=>r.name==key)?.type as RowsTypes} } />
                   </TableCell>
                 ))
               }
