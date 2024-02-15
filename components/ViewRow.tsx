@@ -21,7 +21,7 @@ function ViewRow({row,maxLength=400}: Props) {
             )}
         >
             <div className='flex justify-between'>
-              <div className="capitalize text-gray-600 font-medium">{row.name}</div>
+              <div className="capitalize text-gray-600 font-medium">{row.name} {row.type=="object" ?":":""}</div>
               {
                 row.type == "array"?
                 <div className='text-sm'>

@@ -32,12 +32,29 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
     // check all the rows if the value is not empty
     // if not empty save the doc
 
-    if(!check) return
-    const data:{[key:string]:any} = {}
-    rowsV.forEach(r=>{
-      if(!r.value) return
-      data[r.name] = r.value
-    })
+    // if(!check) return
+    const data: { [key: string]: any } = {};
+    
+    const processRow = (row: any, target: any) => {
+        if (row.type === "image" && row.value === undefined) {
+            target[row.name] = "";
+        } else if (row.type === "object") {
+            let newObject: any = {};
+            row.object?.forEach((o: any) => {
+                processRow(o, newObject); // Recursively process nested objects
+            });
+            target[row.name] = newObject;
+        } else {
+            target[row.name] = row.value ?? "";
+        }
+    };
+
+    rowsV.forEach((row) => {
+        processRow(row, data);
+    });
+
+
+
     addDoc(
       collection(db, _collection),
       {
@@ -47,7 +64,24 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
     )
   }
   useEffect(()=>{
-    let _check = rowsV.every(r=>r.type === "boolean" ? true : r.value)
+  let _check = rowsV.every(r=>{
+    if(r.type==="boolean") return true
+    if(r.type === "object"){
+      const checkObject = (o:Rows)=>{
+        o.object?.forEach((r)=>{
+          if(r.type==="boolean") return true
+          if(r.type === "object"){
+            checkObject(r)
+          }else{
+            return r.value
+          }
+        })
+      }
+      checkObject(r)
+    }else{
+      return r.value
+    }
+  })
     setCheck(_check)
   },[rowsV])
   return (
@@ -58,7 +92,7 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
       <DialogTitle>Create New Document</DialogTitle>
     </DialogHeader>
       <ScrollArea className='h-[70vh] px-0'>
-      <DialogDescription className='px-4'>
+      <DialogDescription className='px-4 py-4'>
 				{rows &&
 					rows.map((r, i) => (
 						<div
@@ -68,7 +102,7 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
 							)}
 							key={name + "::" + i}
 						>
-							<InputsRow row={r} index={i} setRows={setRowsV} rows={rowsV}    />
+							<InputsRow row={r} index={[i]} setRows={setRowsV} rows={rowsV}    />
 						</div>
 					))}
       </DialogDescription>
@@ -77,14 +111,9 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
       <DialogClose>
           <Button variant={"ghost"}>cancel</Button>
       </DialogClose>
-      {
-        check ?
-        <DialogClose>
-          <Button onClick={save} className='gap-2'><Save size={18}/>Save</Button>
-        </DialogClose>
-        :
-        <Button disabled={!check} onClick={save} className='gap-2'><Save size={18}/>Save</Button>
-      }
+      <DialogClose>
+        <Button onClick={save} className='gap-2'><Save size={18}/>Save</Button>
+      </DialogClose>
     </DialogFooter>
   </DialogContent>
 </Dialog>

@@ -22,6 +22,7 @@ type Props = {
 };
 
 function DCard({ name , deleted ,showedRows, collection, description, rows, className, id }: Props) {
+	console.log(rows)
     return (
         rows &&
         <Card className={cn("w-full relative h-fit ", className)}>

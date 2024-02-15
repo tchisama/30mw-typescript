@@ -7,6 +7,7 @@ import CreateNewDoc from "@/components/CreateNewDoc";
 import { Button } from "@/components/ui/button";
 import { Rows } from "@/types";
 import { ArrowUpRight, Banana, Loader, Loader2, Search } from "lucide-react";
+import { getValue } from "@/lib/utils";
 
 type Props = {
   rows:Rows[],
@@ -84,12 +85,34 @@ function DocsList({rows,search ,showedRows,deleted, coll}: Props) {
 					id={d.id}
 					collection={coll}
 					rows={
-						rows.map((r)=>{
-							return {
-								...r,
-								value:d[r.name],
-							}
-						})
+            rows.map((r,i)=>{
+              if(r.type==="object"){
+                const  ifObject:any = (n:Rows,dd:any)=>{
+                  console.log(dd)
+                  return {
+                    ...n,
+                    object: n.object?.map((o)=>{
+                      if(o.type==="object"){
+                        return ifObject(o,dd[o.name as keyof typeof d])
+                      }else{
+                      return {
+                        ...o,
+                        value:dd[o.name as keyof typeof o]
+                        }
+                      }
+                      }
+                    )
+                  }
+                }
+                return ifObject(r,d[r.name as keyof typeof d])
+              }
+              else{
+                return {
+                  ...r,
+                  value:d[r.name as keyof typeof d]
+                }
+              }
+            })
 					}
 
 					/>

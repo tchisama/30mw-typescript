@@ -16,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Separator } from './ui/separator'
 
 type Props = {
     row: Rows
@@ -45,6 +46,7 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
                 <div>{category?.[row.key]} {row.prefix}</div>
             ) : null}
             {row.type == "text" ? (
+                row.value &&
                 <div
                     className="text-sm max-h-[200px] overflow-auto whitespace-normal break-all"
                     dangerouslySetInnerHTML={{
@@ -92,10 +94,11 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
 
             {row.type == "array" ? (
                 row.array &&
-                    <Carousel className='p-2 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
+                    <Carousel className='p-2 min-h-20 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
                         <CarouselContent>
                             {
                                 Array.isArray(row.value) &&
+                                row?.value?.length > 0 ?
                                 row.value?.map((a:any, i:number) => (
                                     <CarouselItem key={i}>
                                         <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
@@ -103,6 +106,10 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
                                         </div>
                                     </CarouselItem>
                                 ))
+                                :
+                                <div className="flex items-center justify-center w-full h-16">
+                                    <div className='p-1 px-3 bg-white border  rounded-md'>No data</div>
+                                </div>
                             }
                         </CarouselContent >
                         <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 left-1'/>
@@ -114,11 +121,18 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
 
             {row.type == "object" ? (
                 row.object &&
-                <div className='p-2 bg-slate-50 mt-2 border rounded-md flex flex-col '>
+                <div className='py-2  pr-2 pl-4 bg-slate-400/5 mt-2 border rounded-md flex flex-col '>
                     {
                         Array.isArray(row.object) &&
                             row.object?.map((a:Rows, i:number) => (
-                                    <ViewRow key={i} row={a} />
+                                <div key={i}>
+                                    <ViewRow  row={a} />
+                                    {
+                                        row?.object &&
+                                        i < row?.object?.length - 1 &&
+                                        <Separator	className="my-1 mt-2"/>
+                                    }
+                                </div>
                         ))
                     }
                 </div>

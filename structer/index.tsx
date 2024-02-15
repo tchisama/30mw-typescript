@@ -93,14 +93,7 @@ export const collections: collType[] = [
 		icon: <Boxes size={iconsSize} />,
 		// type: "table",
 		rows: [
-			{
-				name: "orderNumber",
-				type: "string",
-			},
-			{
-				name: "date",
-				type: "date",
-			},
+
 			{
 				name: "customer",
 				type: "string",
@@ -113,51 +106,25 @@ export const collections: collType[] = [
 						name: "product",
 						type: "string",
 					},
-					{
-						name: "quantity",
-						type: "number",
-					},
-				],
-			},
-			{
-				name: "items",
-				type: "array",
-				array: {
-					name: "products",
-					type: "object",
-					array: {
-						name: "item",
-						type: "object",
-						object: [
-							{
-								name: "product",
-								type: "string",
-							},
-							{
-								name: "quantity",
-								type: "number",
-							},
-						],
-					},
-				},
-			},
-			{
-				name: "status",
-				type: "select",
-				select: [
-					{
-						name: "Pending",
-						value: "pending",
-					},
-					{
-						name: "Shipped",
-						value: "shipped",
-					},
-					{
-						name: "Delivered",
-						value: "delivered",
-					},
-					// Add more status options as needed
+          {
+            name: "inStock",
+            type: "boolean",
+          },
+        {
+          name: "object number 2",
+          type: "object",
+          object: [
+            {
+              name: "product",
+              type: "string",
+            },
+
+            {
+              name: "inStock",
+              type: "boolean",
+            },
+          ],
+        },
 				],
 			},
 		] as Rows[],
@@ -174,19 +141,53 @@ export const collections: collType[] = [
 				type: "string",
 			},
 			{
-				name: "lastName",
-				type: "string",
+				name: "isActive",
+				type: "boolean",
 			},
 			{
 				name: "email",
 				type: "string",
 			},
+      {
+        name:"work",
+        type:"object",
+        object:[
+      {
+        name:"address",
+        type:"object",
+        object:[
+          {
+            name:"country",
+            type:"object",
+            object:[
+              {
+                name:"name",
+                type:"string",
+              },
+              {
+                name:"code",
+                type:"string",
+              },
+            ]
+          },
+          {
+            name:"city",
+            type:"string",
+          },
+        ]
+      },
+          {
+            name:"company",
+            type:"string",
+          },
+          {
+            name:"position",
+            type:"string",
+          }
+        ]
+      },
 			{
 				name: "phone",
-				type: "string",
-			},
-			{
-				name: "address",
 				type: "string",
 			},
 		] as Rows[],
