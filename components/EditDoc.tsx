@@ -41,7 +41,7 @@ const save = () => {
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>
-  <DialogContent className='max-h-[90vh] max-w-[600px]'>
+  <DialogContent className='max-h-[90vh] max-w-[800px]'>
     <DialogHeader>
       <DialogTitle>Edit Document</DialogTitle>
     </DialogHeader>

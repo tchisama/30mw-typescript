@@ -17,17 +17,52 @@ function CollectionPage({selectedCollection}: Props) {
   const [search, setSearch] = React.useState("")
   const [showDeleted, setShowDeleted] = React.useState(false)
   const [showedRows, setShowedRows] = React.useState<{[key:string]:boolean}>()
-  const [pageType,setPageType] = React.useState<"cards"|"table">("cards")
+  const [pageType,setPageType] = React.useState<"cards"|"table">()
   useEffect(()=>{
     let newShowedRows:{[key:string]:boolean} = {}
     selectedCollection?.rows.forEach(r=>{
       newShowedRows[r.name] = true
     })
-    setPageType(selectedCollection?.type as "cards"|"table" || "cards")
+    setPageType(selectedCollection?.type as "cards"|"table")
     setShowedRows(
       newShowedRows
     )
   },[selectedCollection])
+useEffect(() => {
+  // Save showedRows to localStorage
+  if (showedRows && selectedCollection?.collection) {
+    localStorage.setItem("showedRows::" + selectedCollection.collection, JSON.stringify(showedRows));
+  }
+}, [showedRows, selectedCollection]);
+
+useEffect(() => {
+  // Retrieve showedRows from localStorage
+  if (selectedCollection?.collection) {
+    const _showedRows = localStorage.getItem("showedRows::" + selectedCollection.collection);
+    if (_showedRows) {
+      setShowedRows(JSON.parse(_showedRows));
+    }
+  }
+}, [selectedCollection]);
+
+useEffect(() => {
+  // Save pageType to localStorage 
+  if (pageType && selectedCollection?.collection) {
+    localStorage.setItem("pageType::" + selectedCollection.collection, pageType);
+  }
+},[pageType, selectedCollection]);
+useEffect(() => {
+  // Retrieve pageType from localStorage
+  if (selectedCollection?.collection) {
+    const _pageType = localStorage.getItem("pageType::" + selectedCollection.collection);
+    if (_pageType) {
+      setPageType(_pageType as "cards"|"table");
+    }else{
+      setPageType("cards");
+    }
+  }
+}, [selectedCollection]);
+
   return (
     selectedCollection ?
 				<div className="relative flex-1">

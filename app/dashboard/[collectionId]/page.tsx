@@ -25,7 +25,7 @@ export default function Home() {
 	return (
     selectedCollection ?
 		<div className="min-h-screen bg-slate-100">
-			<div className="px-4 max-w-[1800px] mx-auto py-8 relative flex gap-2">
+			<div className="px-4 max-w-[2400px] mx-auto py-8 relative flex gap-2">
         <DashboardNavbar collections={collections}/>
         {
           selectedCollection.page==="collection" ?

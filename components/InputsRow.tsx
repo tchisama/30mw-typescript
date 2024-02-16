@@ -60,7 +60,6 @@ const InputsRow = ({
       getDocs(query(collection(db, reference.collection), where("deleted", "==", false))).then((doc) => {
         const _docs = doc.docs.map((d) => ({ ...d.data(), id: d.id }));
         setDocs(_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows ) })));
-        console.log(_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows ) })));
       });
     }
   }, [type, reference, rows,index]);
@@ -209,6 +208,7 @@ const onValueChange = (newValue: any) => {
               <SelectLabel>Select {name}</SelectLabel>
               {docs &&
                 reference &&
+                docs &&
                 docs.map((s,i) => {
                   return <SelectItem key={s.id} value={s.id}> {s.rows.find((r:Rows) => r.name === reference.key).value} </SelectItem>;
                 })}
@@ -229,7 +229,7 @@ const onValueChange = (newValue: any) => {
               {isDate(getValue({rows,index})) ? (
                 format(new Date(getValue({rows,index})), "PPP")
               ) : getValue({rows,index}) ? (
-                format(new Date((getValue({rows,index}) as Timestamp).toDate()), "PPP")
+                format(new Date((getValue({rows,index}))), "PPP")
               ) : (
                 <span>Pick a date</span>
               )}
