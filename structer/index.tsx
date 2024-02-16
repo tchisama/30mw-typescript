@@ -114,10 +114,12 @@ export const collections: collType[] = [
               {
                 name: "amount",
                 type: "number",
+								value: 8
               },
               {
                 name: "currency",
                 type: "string",
+								value: "Dh"
               },
             ]
           },

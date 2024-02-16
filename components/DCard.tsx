@@ -9,6 +9,7 @@ import { Rows } from "@/types";
 import InputsRow from "./InputsRow";
 import ViewRow from "./ViewRow";
 import { Badge } from "./ui/badge";
+import { Console } from "console";
 
 type Props = {
     name?: string;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 function DCard({ name , deleted ,showedRows, collection, description, rows, className, id }: Props) {
+	console.log(rows)
     return (
         rows &&
         <Card className={cn("w-full relative h-fit ", className)}>

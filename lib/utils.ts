@@ -5,19 +5,22 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-export const getValue = ({rows, index}: {rows:Rows[], index:number[]}) => {
-    let value: Rows[] | Rows = rows;
-    for (let i = 0; i < index.length; i++) {
-        if (Array.isArray(value) && value[index[i]]) {
-          if(value[index[i]].type=="object"){
-            value = value[index[i]].object || value[index[i]];
-          }else if(value[index[i]].type=="array"){
-            value = value[index[i]].value || value[index[i]];
-          }
-        } else {
-            return ""; // or any other appropriate handling for invalid indices
-        }
-    }
-    return (value as Rows).value || "";
-};
 
+
+export const getValue = ({ rows, index }: { rows: Rows[]; index: number[] }): any => {
+    const currentItem = rows[index[0]];
+
+    if (!currentItem || index.length === 0) {
+        return undefined;
+    }
+
+    if (currentItem.type === "object" && currentItem.object) {
+        return getValue({ rows: currentItem.object, index: index.slice(1) });
+    } else if (currentItem.type === "array" && Array.isArray(currentItem.value)) {
+        console.log({rows,index});  
+        return getValue({ rows: currentItem.value[index[1]], index: index.slice(2) });
+    } else {
+        console.log({rows,index});  
+        return currentItem.value || "9lwa";
+    }
+};

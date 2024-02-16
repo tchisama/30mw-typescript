@@ -27,7 +27,6 @@ type Props = {
 function RenderType({row, maxLength,typePage="cards"}: Props) {
     const [category, setCategory] = React.useState<any>("")
     useEffect(() => {
-        console.log(row)
         if(row.type=="reference"){
             if(!row.value) return
             if(!row.reference) return

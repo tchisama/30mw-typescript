@@ -65,37 +65,27 @@ const InputsRow = ({
 
 const onValueChange = (newValue: any) => {
     setRows((prevRows) => {
-				if(index.length==1) return (
-							rows.map((r,i)=>
-								i == index[0] ? { ...r, value: newValue } : r
-							)
-				)
         const newRows = [...prevRows];
-        let currentObject = newRows[index[0]];
-        for (let i = 1; i < index.length - 1; i++) {
-					if(currentObject.type=="object"){
-            if (currentObject && currentObject.object) {
-                currentObject = currentObject.object[index[i]];
-            } else {
-                // Handle the case where currentObject or currentObject.object is undefined
-                // For example, you might return prevRows as is, throw an error, or handle it in another way.
-                return prevRows;
-            }
-					}else if(currentObject.type=="array"){
-            if (currentObject && currentObject.value) {
-                currentObject = currentObject.value[index[i]];
-            } else {
-                // Handle the case where currentObject or currentObject.object is undefined
-                // For example, you might return prevRows as is, throw an error, or handle it in another way.
-                return prevRows;
-            }
-					}
-				}
+        let currentObject: Rows | undefined = newRows[index[0]];
 
-        if (currentObject && currentObject.object) {
-            currentObject.object[index[index.length - 1]].value = newValue;
+        // Traverse the nested structure until reaching the target object
+        for (let i = 1; i < index.length; i++) {
+            if (currentObject && currentObject.type === "object") {
+                currentObject = (currentObject as Rows).object?.[index[i]]; // Use optional chaining to avoid accessing properties of undefined
+            } else if (currentObject && currentObject.type === "array") {
+                currentObject = (currentObject as Rows).value?.[index[i]]; // Use optional chaining to avoid accessing properties of undefined
+            } else {
+                // Handle the case where currentObject is undefined or its type is neither "object" nor "array"
+                // For example, you might return prevRows as is, throw an error, or handle it in another way.
+                return prevRows;
+            }
+        }
+
+        // Check if the currentObject is defined and has the expected properties
+        if (currentObject && (currentObject.type === "object" || currentObject.type === "array")) {
+            currentObject.value = newValue;
         } else {
-            // Handle the case where currentObject or currentObject.object is undefined
+            // Handle the case where currentObject is undefined or its type is neither "object" nor "array"
             // For example, you might return prevRows as is, throw an error, or handle it in another way.
             return prevRows;
         }
@@ -103,6 +93,7 @@ const onValueChange = (newValue: any) => {
         return newRows;
     });
 };
+
 
 // const _rows = [
 //     {
@@ -317,7 +308,7 @@ const onValueChange = (newValue: any) => {
 													{
 															a.map((b:Rows, j:number) => (
 																	<div key={i} className='p-1 px-2 bg-white border  rounded-md'>
-																			<InputsRow index={[...index, i]} rows={rows} setRows={setRows} row={b} />
+																			<InputsRow index={[...index,i,j]} rows={rows} setRows={setRows} row={b} />
 																	</div>
 															))
 													}
@@ -337,7 +328,7 @@ const onValueChange = (newValue: any) => {
         <div className="p-2 px-3 bg-slate-400/5 mt-2 border rounded-md flex flex-col ">
           {Array.isArray(object) &&
             object?.map((a: Rows, i: number) => (
-              <>
+              <div key={i}>
                 <InputsRow
                   index={[...index, i]} // Append current index to the array
                   rows={rows}
@@ -346,7 +337,7 @@ const onValueChange = (newValue: any) => {
                   row={a}
                 />
                 {i < object.length - 1 && <Separator className="my-1 mt-2" />}
-              </>
+              </div>
             ))}
         </div>
       ) : null}
@@ -359,3 +350,5 @@ function isDate(value: any): value is Date {
 }
 
 export default InputsRow;
+
+
