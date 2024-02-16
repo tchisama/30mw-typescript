@@ -97,26 +97,30 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
               {
                 showedRows&&
                 Object.keys(showedRows).map((key) =>{
+                  console.log(rows)
                   let name:string = key
-                  let reference:string = rows.find(r=>r.name==key)?.reference as string
-                  let _key:string = rows.find(r=>r.name==key)?.key as string
+                  let reference:{collection:string,key:string} = rows.find(r=>r.name== key)?.reference as {collection:string,key:string}
                   let _type = rows.find(r=>r.name==key)?.type as RowsTypes
                   let value = dsWithSearch[i].rows.find((r:Rows)=>r.name==key)?.value
-                  console.log(_type)
+                  let select = dsWithSearch[i].rows.find((r:Rows)=>r.name==key)?.select
+                  console.log(value)
                   let prefix = rows.find(r=>r.name==key)?.prefix
                   if(_type === "object") {
                     value = "object"
                     _type = "string"
                   }
-                  if(_type === "array") {
-                    value = value.length + " items in " +  name
+                  if(_type === "array" ) {
+                    if(value){
+                      value = value.length + " items in " +  name
+                    }else{
+                      value = "empty array"
+                    }
                     _type = "string"
                   }
-
                   return (
                     showedRows[key]&&
                     <TableCell key={key} className="font-medium">
-                      <RenderType typePage="table" maxLength={30} row={{name:key,reference,key:_key,value,prefix,type:_type}} />
+                      <RenderType typePage="table" maxLength={30} row={{name:key,select,reference,value,prefix,type:_type}} />
                     </TableCell>
                   )
                 })

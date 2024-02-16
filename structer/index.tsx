@@ -61,6 +61,10 @@ const productPage : CollPage = {
 		href: "/dashboard/products",
 		rows:[
 			{
+				name:"image",
+				type:"image"
+			},
+			{
 				name:"images",
 				type:"array",
 				array:[
@@ -98,6 +102,26 @@ const productPage : CollPage = {
 				name:"inStock",
 				type:"boolean"
 			},
+			{
+				name:"infos",
+				type:"object",
+				object:[
+					{
+						name:"description",
+						type:"text"
+					},
+					{
+						name:"colors",
+						type:"array",
+						array:[
+							{
+								name:"color",
+								type:"string"
+							}
+						]
+					}
+				]
+			}
 		]
 }
 

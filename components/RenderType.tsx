@@ -130,8 +130,8 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
                                 </div>
                             }
                         </CarouselContent >
-                        <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 left-1'/>
-                        <CarouselNext  className='absolute top-1/2 -translate-y-1/2 right-1'/>
+                        <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 -left-4'/>
+                        <CarouselNext  className='absolute top-1/2 -translate-y-1/2 -right-4'/>
                     </Carousel>
 
             ) : null}

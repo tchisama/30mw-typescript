@@ -31,9 +31,7 @@ function CollectionPage({selectedCollection}: Props) {
   return (
     selectedCollection ?
 				<div className="relative flex-1">
-					<div className=" sticky border-b top-0 z-20 bg-slate-100">
-						<div className="flex py-4  gap-2 justify-between">
-							<h1 className="text-4xl">{selectedCollection.name}</h1>
+						<div className="flex py-4  gap-2 justify-end">
 							<div className="flex gap-2">
                 {
                   showDeleted ?
@@ -61,7 +59,9 @@ function CollectionPage({selectedCollection}: Props) {
 								</CreateNewDoc>
 							</div>
 						</div>
-						<div className="flex pb-4 gap-2 justify-end">
+					<div className=" flex justify-between items-end sticky border-b top-0 z-20 bg-slate-100">
+						<h1 className="text-4xl my-auto">{selectedCollection.name}</h1>
+						<div className="flex py-4 gap-2 justify-end">
                 <div  className='gap-1 border flex bg-white rounded-2xl p-[2px] items-center px-1'>
                   <Button onClick={() => setPageType("table")} size={"icon"} className='w-8 h-8' variant={pageType === "cards" ? "ghost" : "default"}><List size={18}/></Button>
                   <Button onClick={() => setPageType("cards")} size={"icon"} className='w-8 h-8' variant={pageType === "table" ? "ghost" : "default"}><LayoutGrid size={18}/></Button>
