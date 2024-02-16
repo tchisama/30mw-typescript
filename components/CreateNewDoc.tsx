@@ -29,39 +29,14 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
   const [rowsV,setRowsV] = React.useState(rows)
   const [check,setCheck] = React.useState(false)
   const save =()=>{
-    // check all the rows if the value is not empty
-    // if not empty save the doc
-
-    // if(!check) return
-    const data: { [key: string]: any } = {};
-    
-    const processRow = (row: any, target: any) => {
-        if (row.type === "image" && row.value === undefined) {
-            target[row.name] = "";
-        } else if (row.type === "object") {
-            let newObject: any = {};
-            row.object?.forEach((o: any) => {
-                processRow(o, newObject); // Recursively process nested objects
-            });
-            target[row.name] = newObject;
-        } else {
-            target[row.name] = row.value ?? "";
-        }
-    };
-
-    rowsV.forEach((row) => {
-        processRow(row, data);
-    });
-
-
-
     addDoc(
       collection(db, _collection),
       {
-        ...data,
+        rows:JSON.stringify(rowsV),
         deleted:false
       }
     )
+
   }
   useEffect(()=>{
   let _check = rowsV.every(r=>{
@@ -87,7 +62,7 @@ const CreateNewDoc = ({children,rows,collection:_collection}: Props) => {
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>
-  <DialogContent className='max-h-[90vh] max-w-[600px]'>
+  <DialogContent className='max-h-[90vh] max-w-[800px]'>
     <DialogHeader>
       <DialogTitle>Create New Document</DialogTitle>
     </DialogHeader>

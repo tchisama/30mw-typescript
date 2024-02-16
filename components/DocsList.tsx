@@ -91,61 +91,7 @@ function DocsList({ rows, search, showedRows, deleted, coll }: Props) {
 								key={d.id}
 								id={d.id}
 								collection={coll}
-								rows={rows.map((r, i) => {
-									if (r.type === "object") {
-										const ifObject: any = (n: Rows, dd: any) => {
-											return {
-												...n,
-												object: n.object?.map((o) => {
-													if (o.type === "object") {
-														return ifObject(o, dd[o.name as keyof typeof d]);
-													} else if (o.type === "array") {
-														return {
-                            ...o,
-                            value: d[o.name as keyof typeof r].map(
-                              (m: Rows, _i: number) => {
-                                if (!o.array) return [];
-                                return o?.array.map((a,i) => {
-                                  return {
-                                    ...a,
-                                    value:d[o.name][_i][a.name]
-                                  };
-                                });
-                              }
-															) as Rows[],
-														};
-													} else {
-														return {
-															...o,
-															value: dd[o.name as keyof typeof o],
-														};
-													}
-												}),
-											};
-										};
-										return ifObject(r, d[r.name as keyof typeof d]);
-									} else if (r.type === "array") {
-										return {
-											...r,
-											value: d[r.name as keyof typeof r].map(
-												(m: Rows, _i: number) => {
-													if (!r.array) return [];
-													return r?.array.map((a,i) => {
-														return {
-															...a,
-															value:d[r.name][_i][a.name] ?? "--"
-														};
-													});
-												}
-											) as Rows[],
-										};
-									} else {
-										return {
-											...r,
-											value: d[r.name as keyof typeof d],
-										};
-									}
-								})}
+								rows={JSON.parse(d.rows)}
 							/>
 						);
 					})}

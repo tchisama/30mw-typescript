@@ -2,7 +2,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { Badge } from "./ui/badge";
-import { cn, getValue } from "@/lib/utils";
+import { cn, getRow, getValue, setValue } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
@@ -10,7 +10,7 @@ import { Rows } from "@/types";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
-import { CalendarIcon, Loader2, Replace, Upload } from "lucide-react";
+import { CalendarIcon, Loader2, Plus, Replace, Trash, Upload } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Timestamp, collection, getDocs, query, where } from "firebase/firestore";
 import UploadImage from "./UploadImage";
@@ -27,6 +27,8 @@ import ViewRow from "./ViewRow";
 import { Separator } from "./ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { resourceUsage } from "process";
+import CreateNewDoc from "./CreateNewDoc";
+import { ref } from "firebase/storage";
 
 const InputsRow = ({
   maxLength = 400,
@@ -37,7 +39,6 @@ const InputsRow = ({
     prefix,
     select,
     reference,
-    key,
     array,
     object,
   },
@@ -54,87 +55,28 @@ const InputsRow = ({
   const [docs, setDocs] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log(rows);
     if (type === "reference") {
       if (!reference) return;
-      getDocs(query(collection(db, reference), where("deleted", "==", false))).then((doc) => {
-        setDocs(doc.docs.map((d) => ({ ...d.data(), id: d.id })));
+      getDocs(query(collection(db, reference.collection), where("deleted", "==", false))).then((doc) => {
+        const _docs = doc.docs.map((d) => ({ ...d.data(), id: d.id }));
+        setDocs(_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows ) })));
+        console.log(_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows ) })));
       });
     }
   }, [type, reference, rows,index]);
 
 const onValueChange = (newValue: any) => {
     setRows((prevRows) => {
-        const newRows = [...prevRows];
-        let currentObject: Rows | undefined = newRows[index[0]];
+      return(
+        setValue({
+          rows: prevRows,
+          index,
+          newValue,
+        }) as Rows[]
+      )
+    })
 
-        // Traverse the nested structure until reaching the target object
-        for (let i = 1; i < index.length; i++) {
-            if (currentObject && currentObject.type === "object") {
-                currentObject = (currentObject as Rows).object?.[index[i]]; // Use optional chaining to avoid accessing properties of undefined
-            } else if (currentObject && currentObject.type === "array") {
-                currentObject = (currentObject as Rows).value?.[index[i]]; // Use optional chaining to avoid accessing properties of undefined
-            } else {
-                // Handle the case where currentObject is undefined or its type is neither "object" nor "array"
-                // For example, you might return prevRows as is, throw an error, or handle it in another way.
-                return prevRows;
-            }
-        }
-
-        // Check if the currentObject is defined and has the expected properties
-        if (currentObject && (currentObject.type === "object" || currentObject.type === "array")) {
-            currentObject.value = newValue;
-        } else {
-            // Handle the case where currentObject is undefined or its type is neither "object" nor "array"
-            // For example, you might return prevRows as is, throw an error, or handle it in another way.
-            return prevRows;
-        }
-
-        return newRows;
-    });
 };
-
-
-// const _rows = [
-//     {
-//         "name": "customer",
-//         "type": "string",
-//         "value": "tchisama"
-//     },
-//     {
-//         "name": "object",
-//         "type": "object",
-//         "object": [
-//             {
-//                 "name": "product",
-//                 "type": "string"
-//             },
-//             {
-//                 "name": "inStock",
-//                 "type": "boolean"
-//             },
-//             {
-//                 "name": "object number 2",
-//                 "type": "object",
-//                 "object": [
-//                     {
-//                         "name": "product",
-//                         "type": "string"
-//                     },
-//                     {
-//                         "name": "inStock",
-//                         "type": "boolean"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-    
-// ]	
-
-
-  // Convert index array to string key
-  const indexKey = index.join("-");
 
   return (
     <div
@@ -266,8 +208,9 @@ const onValueChange = (newValue: any) => {
             <SelectGroup>
               <SelectLabel>Select {name}</SelectLabel>
               {docs &&
-                docs.map((s) => {
-                  return <SelectItem key={s.id} value={s.id}>{s[key]}</SelectItem>;
+                reference &&
+                docs.map((s,i) => {
+                  return <SelectItem key={s.id} value={s.id}> {s.rows.find((r:Rows) => r.name === reference.key).value} </SelectItem>;
                 })}
             </SelectGroup>
           </SelectContent>
@@ -297,24 +240,38 @@ const onValueChange = (newValue: any) => {
           </PopoverContent>
         </Popover>
       ) : type === "array" ? (
-        <div className="flex flex-col ">
-          <Button className="ml-auto">Add to {name}</Button>
-          <Carousel className="p-2 min-h-16 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2">
+        <div className="flex flex-col  w-full">
+          {/* <CreateNewItemInArray rows={rows} setRows={setRows} index={index}> */}
+            <Button
+            variant={"outline"}
+            onClick={() => {
+              if(!array) return;
+              onValueChange([ array.map((a:Rows) => ({...a, value: null})),...(value??[])]);
+            }}
+            className="gap-2 ml-auto"><Plus size={18} /> Add to {name}</Button>
+          {/* </CreateNewItemInArray> */}
+          <div className="flex max-w-[100%]">
+          <Carousel className="p-2 min-h-16 w-blue-200 flex-1 w-[300px] bg-slate-50 mt-2 border rounded-md flex flex-col gap-2">
             <CarouselContent>
               {
 									value?.length > 0 ?
 									value?.map((a:Rows[], i:number) => (
-											<CarouselItem key={i} className='flex flex-col gap-1'>
+											<CarouselItem key={i} className='flex relative flex-col gap-1 pt-14'>
+                          <Button variant={"outline"} size={"icon"} className="absolute top-1 right-1" onClick={
+                            () => {
+                              onValueChange(value?.filter((b:Rows, j:number) => i !== j))
+                            }
+                          }><Trash size={18} /></Button>
 													{
 															a.map((b:Rows, j:number) => (
-																	<div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+																	<div key={j} className='p-1 px-2 bg-white border  rounded-md'>
 																			<InputsRow index={[...index,i,j]} rows={rows} setRows={setRows} row={b} />
 																	</div>
 															))
 													}
 											</CarouselItem>
 									))
-               : (
+                : (
                 <div className="flex items-center justify-center w-full h-16">
                   <div className="p-1 px-2 bg-white border  rounded-md">No data</div>
                 </div>
@@ -323,6 +280,7 @@ const onValueChange = (newValue: any) => {
             <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-1" />
             <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-1" />
           </Carousel>
+          </div>
         </div>
       ) : type === "object" ? (
         <div className="p-2 px-3 bg-slate-400/5 mt-2 border rounded-md flex flex-col ">

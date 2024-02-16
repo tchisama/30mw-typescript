@@ -3,17 +3,14 @@ export type Rows={
 		name: string;
 		value?: any;
 		type: RowsTypes
-		prefix?: string;
+		prefix?: string | React.ReactNode;
 		select?:{
 			name:string
-			value:string
+			value:any
 		}[]
-		reference?:string;
-		key:string;
+		reference?:{collection:string,key:string};
 		array?:Rows[]
-		object?:[
-			Rows
-		]
+		object?:Rows[]
 }
 export type collType = CollPage | CustomPage
 

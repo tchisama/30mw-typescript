@@ -30,20 +30,28 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
         if(row.type=="reference"){
             if(!row.value) return
             if(!row.reference) return
-            if(!row.key) return
-            getDoc(doc(db,row.reference,row.value)).then((doc)=>{
-                setCategory(doc.data() as any)
-                console.log(doc.data() as any)
+            getDoc(doc(db,row.reference.collection,row.value)).then((doc)=>{
+                if(!doc.exists()) return
+                setCategory(JSON.parse(doc.data().rows)[0].value as any)
             })	
         }
     },[row])
     return (
     <div className=''>
-            {row.type == "string" || row.type == "number" || row.type == "select" || row.type == "time"  ? (
+            {row.type == "string" || row.type == "number"  || row.type == "time"  ? (
                 <div>{String(row.value).slice(0, 30)} {row.prefix}</div>
             ) : null}
+                {
+                    row.type === "select" && row.select ? (
+                        <div>
+                            {row.select.find((a) => a.value === row.value)?.name}
+                            {row.prefix}
+                        </div>
+                    ) : null
+                }
             { row.type == "reference" ? (
-                <div>{category?.[row.key]} {row.prefix}</div>
+                row.reference &&
+                <div>{category} {row.prefix}</div>
             ) : null}
             {row.type == "text" ? (
                 row.value &&
@@ -94,21 +102,28 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
 
             {row.type == "array" ? (
                 row.array &&
-                    <Carousel className='p-2 min-h-20 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
+                    <Carousel className='p-2 in-h-20 bg-slate-50 mt-2 border rounded-md flex flex-col gap-2'>
                         <CarouselContent className=''>
                             {
                                 row?.value?.length > 0 ?
-                                row.value?.map((a:Rows[], i:number) => (
+                                row.value?.map((a:Rows[], i:number) => {
+                                    console.log(a)
+                                    return (
                                     <CarouselItem key={i} className='flex flex-col gap-1'>
                                         {
-                                            a.map((b:Rows, j:number) => (
-                                                <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
-                                                    <ViewRow row={b} />
-                                                </div>
-                                            ))
+                                            a&&
+                                            Array.isArray(a) &&
+                                            a.map((b:Rows, j:number) => {
+                                                return(
+                                                    <div key={i} className='p-1 px-2 bg-white border  rounded-md'>
+                                                        <ViewRow row={b} />
+                                                    </div>
+                                                )
+                                            })
                                         }
                                     </CarouselItem>
-                                ))
+                                    )
+                                })
                                 :
                                 <div className="flex items-center justify-center w-full h-16">
                                     <div className='p-1 px-3 bg-white border  rounded-md'>No data </div>
@@ -124,7 +139,7 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
 
             {row.type == "object" ? (
                 row.object &&
-                <div className='py-2  pr-2 pl-4 bg-slate-400/5 mt-2 border rounded-md flex flex-col '>
+                <div className='py-2  pr-2  pl-4 bg-slate-400/5 mt-2 border border-l-2 rounded-md flex flex-col '>
                     {
                         Array.isArray(row.object) &&
                             row.object?.map((a:Rows, i:number) => (

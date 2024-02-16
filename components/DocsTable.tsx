@@ -43,7 +43,8 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
 			setDs(
         doc.docs
             .map((d) => {
-                return { ...d.data(), id: d.id };
+                console.log(d.data())
+                return { ...d.data(),rows:JSON.parse(d.data().rows), id: d.id };
             })
       )
       setLoading(false)
@@ -80,7 +81,6 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
       <TableRow>
         {
           rows.map((row) => (
-            row.type === "object" ? null :
             showedRows?.[row.name] ?
             <TableHead key={row.name}>{row.name}</TableHead>
             :null
@@ -100,13 +100,21 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
                   let name:string = key
                   let reference:string = rows.find(r=>r.name==key)?.reference as string
                   let _key:string = rows.find(r=>r.name==key)?.key as string
-                  let value = dsWithSearch[i][key]
                   let _type = rows.find(r=>r.name==key)?.type as RowsTypes
+                  let value = dsWithSearch[i].rows.find((r:Rows)=>r.name==key)?.value
+                  console.log(_type)
                   let prefix = rows.find(r=>r.name==key)?.prefix
+                  if(_type === "object") {
+                    value = "object"
+                    _type = "string"
+                  }
+                  if(_type === "array") {
+                    value = value.length + " items in " +  name
+                    _type = "string"
+                  }
 
                   return (
                     showedRows[key]&&
-                    _type !== "object" &&
                     <TableCell key={key} className="font-medium">
                       <RenderType typePage="table" maxLength={30} row={{name:key,reference,key:_key,value,prefix,type:_type}} />
                     </TableCell>

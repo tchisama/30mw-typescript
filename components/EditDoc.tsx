@@ -29,35 +29,15 @@ type Props = {
 const EditDoc = ({children,rows,collection:collection,id}: Props) => {
   const [rowsV,setRowsV] = React.useState(rows)
 const save = () => {
-    const data: { [key: string]: any } = {};
-    
-    const processRow = (row: any, target: any) => {
-        if (row.type === "image" && row.value === undefined) {
-            target[row.name] = "";
-        } else if (row.type === "object") {
-            let newObject: any = {};
-            row.object?.forEach((o: any) => {
-                processRow(o, newObject); // Recursively process nested objects
-            });
-            target[row.name] = newObject;
-        } else {
-            target[row.name] = row.value;
-        }
-    };
-
-    rowsV.forEach((row) => {
-        processRow(row, data);
-    });
-
     updateDoc(
         doc(db, collection, id),
         {
-            ...data
+            rows: JSON.stringify(rowsV),
         }
     );
 };
 
-  console.log(collection,id)
+  console.log(rows)
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>
