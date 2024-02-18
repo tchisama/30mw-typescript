@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button } from './ui/button'
-import { CopyX, Eye, EyeOff, Filter, Grid, LayoutGrid, List, Plus, Rows, Trash, X } from 'lucide-react'
+import { ArrowRight, CopyX, Eye, EyeOff, Filter, Grid, LayoutGrid, List, Plus, Rows, Settings, Trash, X } from 'lucide-react'
 import CreateNewDoc from './CreateNewDoc'
 import { Input } from './ui/input'
 import DocsList from './DocsList'
@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import CleanTrash from './CleanTrash'
 import RowsFilter from './RowsFilter'
 import DocsTable from './DocsTable'
+import Link from 'next/link'
 type Props = {
   selectedCollection: CollPage | null
 }
@@ -95,7 +96,13 @@ useEffect(() => {
 							</div>
 						</div>
 					<div className=" flex justify-between items-end sticky border-b top-0 z-20 bg-slate-100">
-						<h1 className="text-4xl my-auto">{selectedCollection.name}</h1>
+            <div className='flex flex-col h-full  my-auto'>
+              <h1 className="text-4xl my-auto">{selectedCollection.name}</h1>
+              <Link className='flex gap-2 items-center py-3 text-primary/50 hover:text-primary' href={`/dashboard/${selectedCollection.collection}/setting`}> 
+                  <Settings size={16}/>  {selectedCollection.name} Settings <ArrowRight size={16}/>
+              </Link>
+              {/* <Button size={"icon"} variant={"outline"}><Settings size={18}/></Button> */}
+            </div>
 						<div className="flex py-4 gap-2 justify-end">
                 <div  className='gap-1 border flex bg-white rounded-2xl p-[2px] items-center px-1'>
                   <Button onClick={() => setPageType("table")} size={"icon"} className='w-8 h-8' variant={pageType === "cards" ? "ghost" : "default"}><List size={18}/></Button>

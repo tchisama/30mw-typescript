@@ -43,7 +43,6 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
 			setDs(
         doc.docs
             .map((d) => {
-                console.log(d.data())
                 return { ...d.data(),rows:JSON.parse(d.data().rows), id: d.id };
             })
       )
@@ -97,13 +96,11 @@ const DocsTable = ({rows,search ,showedRows,deleted, coll}: Props) => {
               {
                 showedRows&&
                 Object.keys(showedRows).map((key) =>{
-                  console.log(rows)
                   let name:string = key
                   let reference:{collection:string,key:string} = rows.find(r=>r.name== key)?.reference as {collection:string,key:string}
                   let _type = rows.find(r=>r.name==key)?.type as RowsTypes
                   let value = dsWithSearch[i].rows.find((r:Rows)=>r.name==key)?.value
                   let select = dsWithSearch[i].rows.find((r:Rows)=>r.name==key)?.select
-                  console.log(value)
                   let prefix = rows.find(r=>r.name==key)?.prefix
                   if(_type === "object") {
                     value = "object"

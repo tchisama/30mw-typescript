@@ -17,6 +17,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Separator } from './ui/separator'
+import { Avatar, AvatarImage } from './ui/avatar'
 
 type Props = {
     row: Rows
@@ -30,10 +31,13 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
         if(row.type=="reference"){
             if(!row.value) return
             if(!row.reference) return
-            getDoc(doc(db,row.reference.collection,row.value)).then((doc)=>{
-                if(!doc.exists()) return
-                setCategory(JSON.parse(doc.data().rows)[0].value as any)
-            })	
+            getDoc(doc(db, row.reference?.collection, row.value)).then((doc) => {
+                if (!doc.exists()) return;
+                if (!row.reference) return;
+                setCategory(
+                    JSON.parse(doc.data().rows).find((r: Rows) => r.name == row.reference!.key) as any
+                );
+            });
         }
     },[row])
     return (
@@ -51,7 +55,7 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
                 }
             { row.type == "reference" ? (
                 row.reference &&
-                <div>{category} {row.prefix}</div>
+                <div> <RenderType row={category} /></div>
             ) : null}
             {row.type == "text" ? (
                 row.value &&
@@ -136,6 +140,11 @@ function RenderType({row, maxLength,typePage="cards"}: Props) {
 
             ) : null}
 
+            {row.type == "avatar" ? (
+                <Avatar className='rounded-2xl'>
+                    <AvatarImage src={row.value} />
+                </Avatar>
+            ) : null}
 
             {row.type == "object" ? (
                 row.object &&

@@ -1,3 +1,4 @@
+import CollProvider from "@/components/CollProvider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
@@ -15,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>{children}</body>
+      <body className={`${inter.className}`}>
+        <CollProvider>
+            {children}
+        </CollProvider>
+      </body>
     </html>
   );
 }

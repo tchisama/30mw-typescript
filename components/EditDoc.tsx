@@ -37,7 +37,6 @@ const save = () => {
     );
 };
 
-  console.log(rows)
   return (
 <Dialog>
   <DialogTrigger asChild>{children}</DialogTrigger>

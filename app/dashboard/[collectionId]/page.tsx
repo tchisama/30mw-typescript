@@ -4,8 +4,9 @@ import { CollPage, CustomPage as CustomPageType, Rows, collType } from "@/types"
 import { notFound, usePathname } from "next/navigation";
 import DashboardNavbar from "@/components/DashboardNavbar";
 import CollectionPage from "@/components/CollectionPage";
-import { collections } from "@/structer";
 import CustomPage from "@/components/CustomPage";
+import path from "path";
+import { useCollections } from "@/store/collections";
 
 
 
@@ -14,14 +15,17 @@ import CustomPage from "@/components/CustomPage";
 
 export default function Home() {
   const [selectedCollection, setSelectedCollection] = React.useState<collType|null>(null);
+  const {collections} = useCollections()
   const pathname = usePathname()
-  console.log(pathname)
   useEffect(()=>{
     if(!pathname) return
+    if(!collections) return
     const foundCollection = collections.find((c)=>c.href===pathname) || null
-    if(!foundCollection) return notFound()
+    if(pathname !== "/dashboard/settings"){
+      if(!foundCollection) return notFound()
+    }
     setSelectedCollection(foundCollection)
-  },[pathname,selectedCollection])
+  },[pathname,selectedCollection,collections])
 	return (
     selectedCollection ?
 		<div className="min-h-screen bg-slate-100">
@@ -34,7 +38,6 @@ export default function Home() {
           <CustomPage selectedCollection={selectedCollection as CustomPageType}/>
           :null
         }
-
 			</div>
 		</div>
     :null

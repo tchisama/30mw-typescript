@@ -6,11 +6,11 @@ import { cn, getRow, getValue, setValue } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
-import { Rows } from "@/types";
+import { Rows, RowsTypes } from "@/types";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
-import { CalendarIcon, Loader2, Plus, Replace, Trash, Upload } from "lucide-react";
+import { CalendarIcon, ImageIcon, Loader2, Plus, Replace, Trash, Upload } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Timestamp, collection, getDocs, query, where } from "firebase/firestore";
 import UploadImage from "./UploadImage";
@@ -29,6 +29,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { resourceUsage } from "process";
 import CreateNewDoc from "./CreateNewDoc";
 import { ref } from "firebase/storage";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import RenderType from "./RenderType";
 
 const InputsRow = ({
   maxLength = 400,
@@ -59,7 +61,9 @@ const InputsRow = ({
       if (!reference) return;
       getDocs(query(collection(db, reference.collection), where("deleted", "==", false))).then((doc) => {
         const _docs = doc.docs.map((d) => ({ ...d.data(), id: d.id }));
-        setDocs(_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows ) })));
+        const _docs2 =_docs.map((d:any) => ({ ...d, rows: JSON.parse(d.rows )}))
+        setDocs(_docs2);
+        console.log(_docs2);
       });
     }
   }, [type, reference, rows,index]);
@@ -199,18 +203,23 @@ const onValueChange = (newValue: any) => {
           </SelectContent>
         </Select>
       ) : type === "reference" ? (
-        <Select defaultValue={value} onValueChange={(value: string) => setRows(rows.map((r, i) => (i === index[index.length - 1] ? { ...r, value } : r)))}>
-          <SelectTrigger className="w-[300px]">
+        <Select defaultValue={value} onValueChange={
+          (value: string) => onValueChange(value)
+        }>
+          <SelectTrigger className={cn("w-[300px] h-fit")}>
             <SelectValue placeholder={name} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="h-fit">
             <SelectGroup>
               <SelectLabel>Select {name}</SelectLabel>
               {docs &&
                 reference &&
                 docs &&
                 docs.map((s,i) => {
-                  return <SelectItem key={s.id} value={s.id}> {s.rows.find((r:Rows) => r.name === reference.key).value} </SelectItem>;
+                  return <SelectItem key={s.id} value={s.id}> 
+                  {/* // s.rows.find((r:Rows) => r.name === reference.key).value */}
+                  <RenderType maxLength={30} row={s.rows.find((r:Rows) => r.name === reference.key) as Rows} />
+                 </SelectItem>;
                 })}
             </SelectGroup>
           </SelectContent>
@@ -298,6 +307,28 @@ const onValueChange = (newValue: any) => {
               </div>
             ))}
         </div>
+      ) : type === "avatar" ? (
+          <UploadImage returnImage={(image: string) => onValueChange(image)} className="">
+            {({ id, loading }) => {
+              return (
+                <button
+                  onClick={() => {
+                    // click the input file with the id
+                    document.getElementById(id)?.click();
+                  }}
+                  className="gap-2"
+                >
+                    <Avatar className="bg-slate-100 rounded-2xl border w-12 h-12 relative">
+                      {
+                        loading ? <div className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"><Loader2 size={20} className=" animate-spin" /></div>:
+                        getValue({rows,index}) ? <AvatarImage src={String(getValue({rows,index}))} /> : <ImageIcon size={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" strokeWidth={1} color='#555' />
+                      }
+                    </Avatar>
+                </button>
+              );
+            }}
+          </UploadImage>
+
       ) : null}
     </div>
   );

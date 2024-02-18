@@ -33,7 +33,7 @@ const DashboardNavbar = (props: Props) => {
 							props.collections.map((C,i)=>{
 								return (
 									<Link className=" " key={i} href={C.href}>
-										<div className={cn("flex py-2 capitalize gap-2 items-center p-2 px-4 rounded-xl duration-150 hover:bg-slate-100 ", pathname== C.href && "bg-primary/90 hover:bg-primary text-white")}>{C.icon} {C.name}</div>
+										<div className={cn("flex py-2 capitalize gap-2 items-center p-2 px-4 rounded-xl duration-150 hover:bg-slate-100 ", pathname== C.href && "bg-primary/90 hover:bg-primary text-white")}>{C.icon({size:18})} {C.name}</div>
 									</Link>
 								)
 							})
@@ -47,10 +47,10 @@ const DashboardNavbar = (props: Props) => {
 						</div>
 					</Link>
 					<Separator className='' />
-					<Link className="" href={"/dashboard/notification"}>
-						<div className={cn("flex py-2 capitalize gap-2 items-center p-2 px-4 rounded-xl duration-150 hover:bg-slate-100 ", pathname== "/dashboard/notification" && "bg-primary/90 hover:bg-primary text-white")}>
+					<Link className="" href={"/dashboard/settings"}>
+						<div className={cn("flex py-2 capitalize gap-2 items-center p-2 px-4 rounded-xl duration-150 hover:bg-slate-100 ", pathname== "/dashboard/settings" && "bg-primary/90 hover:bg-primary text-white")}>
 							<Settings size={18} />
-							Setting
+							Settings
 						</div>
 					</Link>
 					<Button variant={"outline"} className={cn("flex h-fit items-center capitalize gap-2 justify-start px-2 rounded-xl duration-150 hover:bg-slate-100 ")}>

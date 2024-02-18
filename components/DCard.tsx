@@ -23,7 +23,6 @@ type Props = {
 };
 
 function DCard({ name , deleted ,showedRows, collection, description, rows, className, id }: Props) {
-	console.log(rows)
     return (
         rows &&
         <Card className={cn("w-full relative h-fit ", className)}>
@@ -33,7 +32,7 @@ function DCard({ name , deleted ,showedRows, collection, description, rows, clas
 							:null
 						}
             <ControlDoc deleted={deleted} collection={collection} rows={rows} id={id}>
-                <Button size={"icon"} className="absolute top-2 right-2" variant={"outline"}><MoreHorizontal size={18} /></Button>
+                <Button size={"icon"} className="absolute top-2 right-2" variant={"ghost"}><MoreHorizontal size={18} /></Button>
             </ControlDoc>
 						
             {(name || description) ? (
