@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { CollPage, Rows, collType } from "@/types";
 import {
+  ArrowRight,
 	Brackets,
 	Calendar,
 	CircleUser,
@@ -12,12 +13,14 @@ import {
 	ListIcon,
 	MoreHorizontal,
 	MousePointer,
+	PenLine,
 	Plus,
 	Replace,
 	Text,
 	ToggleLeft,
 	Trash,
 	TypeIcon,
+	X,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -35,10 +38,13 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCollections } from "@/store/collections";
-import { addRow, removeRow, setName, setType, setValue } from "@/lib/utils";
+import { addRow, removeRow, setName,  setSelect, setType, setValue } from "@/lib/utils";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { Input } from "./ui/input";
+import AddRowDialog from "./AddRowDialog";
+import { Value } from "@radix-ui/react-select";
+import { Select } from "./ui/select";
 
 type Props = {
   i:number;
@@ -100,41 +106,25 @@ useEffect(() => {
 					collection.rows.map((r, i) => {
 						return <RenderRow setCollection={setCollection} key={i} r={r} collection={collection} i={[i]} />;
 					})}
+          <AddRowDialog setCollection={setCollection} index={[]}>
           <Button
-          onClick={
-            () => {
-              setCollection((prev) => {
-                  return {
-                    ...prev,
-                    rows: addRow({
-                      rows: prev.rows,
-                      index: [],
-                      newValue: {
-                        name: "hello",
-                        type: "string",
-                        value: "",
-                      }
-
-                    })
-                  }
-              });
-            }
-          }
-           className=" mr-2 gap-2" variant={"outline"}>
-            <Plus size={18} />
-            add new ro
+            className=" mr-2 w-full mt-2 gap-2" variant={"outline"}>
+              <Plus size={18} />
+              add new row
           </Button>
+          </AddRowDialog>
 			</div>
 		</Card>
 	);
 };
 
 const RenderRow = ({ r ,collection,i:ii,setCollection }: { r: Rows , collection:CollPage,i:number[],setCollection:Function} ) => {
+	const [option, setOption] = useState<string>("");
 	const render = (a: Rows,index:number[]) => {
 		const AddRelativeDiv = (children: React.ReactNode) => {
 			return (
-				<div className="relative flex ">
-					<div className="flex-1">{children}</div>
+				<div className="relative flex  ">
+					<div className=" w-full">{children}</div>
 					<EditRow r={a} index={index} setCollection={setCollection}  collection={collection}/>
 				</div>
 			);
@@ -156,31 +146,14 @@ const RenderRow = ({ r ,collection,i:ii,setCollection }: { r: Rows , collection:
 						{a.object?.map((o, i) => {
 							return render(o,[...index,i]);
 						})}
+            <AddRowDialog setCollection={setCollection} index={index}>
+            <Button
+              className=" mr-2 w-full mt-2 gap-2" variant={"outline"}>
+                <Plus size={18} />
+                add new row
+            </Button>
+            </AddRowDialog>
 					</div>
-          <Button
-            onClick={
-              () => {
-                setCollection((prev: CollPage) => {
-                  return {
-                    ...prev,
-                    rows: addRow({
-                      rows: prev.rows,
-                      index,
-                      newValue: {
-                        name: "hello",
-                        type: "string",
-                        value: "",
-                      }
-
-                    }),
-                  };
-                });
-              }
-            }
-            className=" mr-2 w-full mt-2 gap-2" variant={"outline"}>
-              <Plus size={18} />
-              add new row
-          </Button>
 				</div>
 			);
 		} else if (a.type === "array") {
@@ -200,12 +173,18 @@ const RenderRow = ({ r ,collection,i:ii,setCollection }: { r: Rows , collection:
 						{a.array?.map((o, i) => {
 							return render(o,[...index,i]);
 						})}
+          <AddRowDialog setCollection={setCollection} index={index}>
+          <Button
+            className=" mr-2 w-full mt-2 gap-2" variant={"outline"}>
+              <Plus size={18} />
+              add new row
+          </Button>
+          </AddRowDialog>
 					</div>
 				</div>
 			);
 		} else if (a.type === "reference") {
 			return (
-				a.reference &&
 				AddRelativeDiv(
 					<div className="flex bg-white border rounded-xl px-4 my-1   border-t py-1 gap-2 justify-between">
 						<div className="font-medium">{a.name}</div>
@@ -215,10 +194,79 @@ const RenderRow = ({ r ,collection,i:ii,setCollection }: { r: Rows , collection:
 									icons[a.type as keyof typeof icons]({ size: 15 })}{" "}
 								{a.type}
 							</div>
-							<div className="text-sm">
-								ref of {a?.reference.key} in {a?.reference.collection}
+              {
+                a.reference ?
+                <div className="text-sm">
+                  ref of {a?.reference.key} in {a?.reference.collection}
+                </div>
+                :
+                <div className="flex text-sm gap-2 items-center">Make a reference <ArrowRight size={18}/></div>
+              }
+						</div>
+					</div>
+				)
+			);
+		} else if (a.type === "select") {
+			return (
+				AddRelativeDiv(
+					<div className="flex flex-col bg-white border rounded-xl px-4 my-1   border-t py-1 gap-2 justify-between">
+						<div className="flex justify-between">
+							<div className="font-medium">{a.name}</div>
+							<div className="flex flex-col items-end">
+								<div className="flex gap-2 items-center">
+									{a.type}
+								</div>
 							</div>
 						</div>
+							<div className="p-2 bg-slate-400/10 w-full border rounded-xl flex flex-col gap-2">
+									{
+										a.select?.map((o, i) => {
+											return (
+												<div key={i} className="flex gap-2 justify-between bg-white rounded-xl p-1 border pl-4 items-center">
+													{o.name}
+													<Button
+													onClick={()=>{
+														if(!a.select) return
+														setCollection(
+															{
+																...collection,
+																rows: setSelect({
+																	rows: collection.rows,
+																	index,
+																	newValue: [...a.select.filter((s,ii)=> ii !== i)] || [],
+																}),
+															}
+														);
+													}}
+														size={"icon"} className="w-6 h-6" variant={"ghost"}><X size={18} /></Button>
+												</div>
+											)
+										})
+									}
+							</div>
+							<div className="flex  my-2 gap-2 items-center">
+								<Input placeholder="new option" value={option} onChange={(e) => setOption(e.target.value)}/>
+								<Button
+									onClick={() => {
+										if(!a.select) return
+										if(!option) return
+										setCollection(
+											{
+												...collection,
+												rows: setSelect({
+													rows: collection.rows,
+													index,
+													newValue: [...a.select,{name:option,value:option}] || [{name:option,value:option}],
+												}),
+											}
+										);
+										setOption("")
+									}}
+								className=" w-full gap-2" variant={"outline"}>
+									<Plus size={18} />
+									add new option
+								</Button>
+							</div>
 					</div>
 				)
 			);
@@ -242,7 +290,7 @@ const RenderRow = ({ r ,collection,i:ii,setCollection }: { r: Rows , collection:
 
 
 
-const RowsTypes = ["string", "number", "boolean", "object", "array", "reference", "text","image","avatar","date","time"];
+const RowsTypes = ["string", "number", "boolean", "object", "array", "reference", "text","image","avatar","date","time","select"];
 
 const EditRow = ({ r,index,setCollection,collection }: { r: Rows,index:number[],setCollection:Function , collection : CollPage}) => {
 	return (
@@ -255,6 +303,10 @@ const EditRow = ({ r,index,setCollection,collection }: { r: Rows,index:number[],
 			<DropdownMenuContent>
 				<DropdownMenuLabel>Edit Row</DropdownMenuLabel>
 				<DropdownMenuSeparator />
+        <DropdownMenuItem className="flex gap-2">
+          <PenLine size={15}/>
+          change name
+        </DropdownMenuItem>
 				<DropdownMenuGroup>
 					<DropdownMenuSub>
 						<DropdownMenuSubTrigger className="flex gap-2"><Replace size={15} />Change Type </DropdownMenuSubTrigger>

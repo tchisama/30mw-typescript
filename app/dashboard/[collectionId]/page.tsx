@@ -21,9 +21,9 @@ export default function Home() {
     if(!pathname) return
     if(!collections) return
     const foundCollection = collections.find((c)=>c.href===pathname) || null
-    if(pathname !== "/dashboard/settings"){
-      if(!foundCollection) return notFound()
-    }
+    // if(pathname !== "/dashboard/settings"){
+    //   if(!foundCollection) return notFound()
+    // }
     setSelectedCollection(foundCollection)
   },[pathname,selectedCollection,collections])
 	return (

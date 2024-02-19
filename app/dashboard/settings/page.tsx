@@ -50,7 +50,7 @@ export default function Page() {
 					>
 						make blog to hello
 					</Button> */}
-          <div className="grid grid-cols-3 mt-4 gap-2">
+          <div className="grid grid-cols-2 mt-4 gap-2">
             {
               collections && collections.map((c:CollPage|CustomPageType,i)=>{
                 if(c.page !== "collection") return null

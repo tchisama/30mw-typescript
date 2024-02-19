@@ -29,22 +29,22 @@ function CollectionPage({selectedCollection}: Props) {
       newShowedRows
     )
   },[selectedCollection])
-useEffect(() => {
-  // Save showedRows to localStorage
-  if (showedRows && selectedCollection?.collection) {
-    localStorage.setItem("showedRows::" + selectedCollection.collection, JSON.stringify(showedRows));
-  }
-}, [showedRows, selectedCollection]);
+// useEffect(() => {
+//   // Save showedRows to localStorage
+//   if (showedRows && selectedCollection?.collection) {
+//     localStorage.setItem("showedRows::" + selectedCollection.collection, JSON.stringify(showedRows));
+//   }
+// }, [showedRows, selectedCollection]);
 
-useEffect(() => {
-  // Retrieve showedRows from localStorage
-  if (selectedCollection?.collection) {
-    const _showedRows = localStorage.getItem("showedRows::" + selectedCollection.collection);
-    if (_showedRows) {
-      setShowedRows(JSON.parse(_showedRows));
-    }
-  }
-}, [selectedCollection]);
+// useEffect(() => {
+//   // Retrieve showedRows from localStorage
+//   if (selectedCollection?.collection) {
+//     const _showedRows = localStorage.getItem("showedRows::" + selectedCollection.collection);
+//     if (_showedRows) {
+//       setShowedRows(JSON.parse(_showedRows));
+//     }
+//   }
+// }, [selectedCollection]);
 
 useEffect(() => {
   // Save pageType to localStorage 
